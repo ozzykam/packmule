@@ -12,8 +12,8 @@ const SpecialtyList = () => {
 
     return (
         <div className="specialty-wrapper">
-            {specialtys.map(specialty => (
-                <div className="specialty-card">
+            {specialtys.map((specialty, key) => (
+                <div key={key} className="specialty-card">
                      <div className="card-body">
                         <div className="card-title">{specialty.name}</div>
                         <p>{specialty.description}</p>
