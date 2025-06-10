@@ -4,7 +4,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./app/auth');
-// TODO: Add mules, gigs, specialties, users routes
+const muleRoutes = require('./app/mules');
+// TODO: Add gigs, specialties, users routes
 
 const app = express();
 app.use(cors({origin: true, credentials: true}));
@@ -12,5 +13,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/mules', muleRoutes);
 
 exports.api = functions.https.onRequest(app);
