@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 export function useAuth() {
     const token = localStorage.getItem('token')
@@ -7,7 +7,7 @@ export function useAuth() {
     const user = useMemo(() => {
         if (!token) return null
         try {
-            const decoded = jwt_decode(token)
+            const decoded = jwtDecode(token)
             return decoded.user
         } catch (e) {
             console.error('Invalid token:', e)
