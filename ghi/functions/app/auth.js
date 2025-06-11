@@ -1,148 +1,131 @@
-const express = require('express')
-const jwt = require('../utils/jwt')
-const hash = require('../utils/hash')
-const authMiddleware = require('../middleware/auth')
-const admin = require('firebase-admin')
+const express = require('express');
+const jwt = require('../utils/jwt');
+const hash = require('../utils/hash');
+const authMiddleware = require('../middleware/auth');
+const {db} = require('../index'); // 🔧Import db from shared initialized instance
 
-const router = express.Router()
-const db = admin.firestore()
+// eslint-disable-next-line new-cap
+const router = express.Router();
 
-// ✅ Signup Route
+// 🔥 Signup Route
 router.post('/signup', async (req, res) => {
     try {
-        const body = req.body || {}
+        console.log('🔥 Starting signup process');
+        const {username, password, name, email, phone, bio} = req.body || {};
 
-        // Log entire request payload for debugging
-        console.log(
-            '🔥 Incoming signup payload:',
-            JSON.stringify(body, null, 2)
-        )
+        console.log('🔥 Incoming data:', {
+            username,
+            hasPassword: !!password,
+            name,
+            email,
+            phone,
+        });
 
-        const username = body.username?.trim() || ''
-        const password = body.password || ''
-        const name = body.name || ''
-        const email = body.email || ''
-        const phone = body.phone || ''
-        const bio = body.bio || ''
-
-        // Validate required fields
         if (!username || !password) {
-            console.warn('⚠ Missing username or password')
+            console.log('❌ Missing username or password');
             return res
                 .status(400)
-                .json({ error: 'Username and password are required.' })
+                .json({error: 'Username and password required'});
         }
 
-        // Check for existing user
-        const existing = await db
+        const existingSnap = await db
             .collection('users')
             .where('username', '==', username)
-            .get()
+            .get();
+        console.log('🔥 Existing username query executed');
 
-        if (!existing.empty) {
-            console.warn('⚠ Username already exists:', username)
-            return res.status(409).json({ error: 'Username already exists' })
+        if (!existingSnap.empty) {
+            console.log('❌ Username already exists');
+            return res.status(409).json({error: 'Username already exists'});
         }
 
-        const hashed = hash.hashPassword(password)
-
+        const hashedPassword = hash.hashPassword(password);
         const newUserRef = await db.collection('users').add({
             username,
-            password: hashed,
+            password: hashedPassword,
             name,
             email,
             phone,
             bio,
-        })
+        });
 
-        const user = {
-            id: newUserRef.id,
-            username,
-            name,
-            email,
-            phone,
-        }
+        console.log('✅ New user created with ID:', newUserRef.id);
 
-        const token = jwt.generateJWT({ id: user.id, username: user.username })
+        const token = jwt.generateJWT({id: newUserRef.id, username});
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-        })
+        });
 
-        res.json({ ...user, token })
+        res.json({id: newUserRef.id, username, name, email, phone, token});
     } catch (err) {
-        console.error('🔥 Signup error:', err)
-        res.status(500).json({ error: 'Internal Server Error' })
+        console.error('🔥 Signup error:', err);
+        res.status(500).json({error: 'Internal Server Error'});
     }
-})
+});
 
-// ✅ Signin Route
+// 🔥 Signin Route
 router.post('/signin', async (req, res) => {
     try {
-        const { username, password } = req.body || {}
-
-        console.log('🔥 Incoming signin attempt for username:', username)
-
-        if (!username || !password) {
-            console.warn('⚠ Missing username or password for signin')
-            return res
-                .status(400)
-                .json({ error: 'Username and password are required.' })
-        }
+        console.log('🔥 Starting signin process');
+        const {username, password} = req.body;
 
         const snapshot = await db
             .collection('users')
             .where('username', '==', username)
-            .get()
+            .get();
+        console.log('🔥 Query executed for signin');
 
         if (snapshot.empty) {
-            console.warn('⚠ Username not found:', username)
-            return res.status(401).json({ error: 'Invalid credentials' })
+            console.log('❌ No user found for username');
+            return res.status(401).json({error: 'Invalid credentials'});
         }
 
-        const userDoc = snapshot.docs[0]
-        const userData = userDoc.data()
+        const userDoc = snapshot.docs[0];
+        const userData = userDoc.data();
 
-        const isValid = hash.verifyPassword(password, userData.password)
+        const isValid = hash.verifyPassword(password, userData.password);
         if (!isValid) {
-            console.warn('⚠ Invalid password for user:', username)
-            return res.status(401).json({ error: 'Invalid credentials' })
+            console.log('❌ Invalid password');
+            return res.status(401).json({error: 'Invalid credentials'});
         }
 
-        const user = {
+        const token = jwt.generateJWT({
             id: userDoc.id,
             username: userData.username,
-            name: userData.name || '',
-            email: userData.email || '',
-            phone: userData.phone || '',
-        }
-
-        const token = jwt.generateJWT({ id: user.id, username: user.username })
+        });
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
-        })
+        });
 
-        res.json({ ...user, token })
+        res.json({
+            id: userDoc.id,
+            username: userData.username,
+            name: userData.name,
+            email: userData.email,
+            phone: userData.phone,
+            token,
+        });
     } catch (err) {
-        console.error('🔥 Signin error:', err)
-        res.status(500).json({ error: 'Internal Server Error' })
+        console.error('🔥 Signin error:', err);
+        res.status(500).json({error: 'Internal Server Error'});
     }
-})
+});
 
-// ✅ Auth check route
+// 🔥 Authenticate Route
 router.get('/authenticate', authMiddleware, (req, res) => {
-    res.json(req.user)
-})
+    res.json(req.user);
+});
 
-// ✅ Signout route
+// 🔥 Signout Route
 router.delete('/signout', (req, res) => {
-    res.clearCookie('token')
-    res.status(204).send()
-})
+    res.clearCookie('token');
+    res.status(204).send();
+});
 
-module.exports = router
+module.exports = router;
