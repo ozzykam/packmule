@@ -134,6 +134,9 @@ export const packmuleApi = createApi({
         listAllMules: builder.query({
             query: () => ({ url: '/api/mule/all' }),
         }),
+        getGigsForMulesList: builder.query({
+            query: () => ({ url: '/api/mules/gigs' }),
+        }),
     }),
 })
 
