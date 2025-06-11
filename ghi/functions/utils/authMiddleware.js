@@ -1,4 +1,4 @@
-const jwt = require('../utils/jwt');
+const jwt = require('./jwt');
 
 module.exports = function authMiddleware(req, res, next) {
     const headerAuth = req.headers.authorization;

@@ -1,39 +1,30 @@
-const functions = require('firebase-functions');
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const admin = require('firebase-admin');
+const functions = require('firebase-functions')
+const express = require('express')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const admin = require('firebase-admin')
 
-// 🔧 LOCKING IN GEN2: Explicit projectId assignment
-const projectId = process.env.GCLOUD_PROJECT || 'packmule-650ce';
+// Initialize Admin SDK
+admin.initializeApp()
+const db = admin.firestore()
 
-admin.initializeApp({
-    projectId,
-});
+// Import your routes (passing db into each route module)
+const authRoutes = require('./app/auth')(db)
+const muleRoutes = require('./app/mules')(db)
+const gigRoutes = require('./app/gigs')(db)
+const specialtyRoutes = require('./app/specialtys')(db)
 
-const db = admin.firestore();
-module.exports.db = db; // export for submodules
+// Express app setup
+const app = express()
+app.use(cors({ origin: 'https://packmule-650ce.web.app', credentials: true }))
+app.use(express.json())
+app.use(cookieParser())
 
-const authRoutes = require('./app/auth');
-const muleRoutes = require('./app/mules');
-const gigRoutes = require('./app/gigs');
-const specialtyRoutes = require('./app/specialtys');
+// Route mounting
+app.use('/api/auth', authRoutes)
+app.use('/api/mule', muleRoutes)
+app.use('/api/gigs', gigRoutes)
+app.use('/api/specialtys', specialtyRoutes)
 
-const app = express();
-
-app.use(
-    cors({
-        origin: 'https://packmule-650ce.web.app',
-        credentials: true,
-    }),
-);
-
-app.use(express.json());
-app.use(cookieParser());
-
-app.use('/api/auth', authRoutes);
-app.use('/api/mule', muleRoutes);
-app.use('/api/gigs', gigRoutes);
-app.use('/api/specialtys', specialtyRoutes);
-
-exports.api = functions.https.onRequest(app);
+// Deployable function export
+exports.api = functions.https.onRequest(app)
