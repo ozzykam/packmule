@@ -6,7 +6,7 @@ import SignInForm from './components/SignInForm'
 import SignUpForm from './components/SignUpForm'
 import GigMarketplace from './components/GigMarketplace'
 import GigDetails from './components/GigDetails'
-import SpecialtyList from './components/specialtyList'
+import SpecialtyList from './components/SpecialtyList'
 import MuleSpecialtiesSelector from './components/MuleSpecialtiesSelector'
 import MuleSpecialtiesEditor from './components/MuleSpecialtiesEditor'
 import MuleProfile from './components/MuleProfile'
@@ -14,12 +14,11 @@ import EditMuleProfile from './components/EditMuleProfile'
 import GigHistory from './components/GigHistory'
 import PayHistory from './components/PayHistory'
 import App from './App'
+import { RequireAuth } from './components/RequireAuth'
 
 import './index.css'
 import { store } from './app/store'
 import { Provider } from 'react-redux'
-
-import './index.css'
 
 const BASE_URL = import.meta.env.BASE_URL
 if (!BASE_URL) {
@@ -32,63 +31,92 @@ const router = createBrowserRouter(
             path: '/',
             element: <App />,
             children: [
-                {
-                    path: 'signup',
-                    element: <SignUpForm />,
-                },
-                {
-                    path: 'signin',
-                    element: <SignInForm />,
-                },
+                { path: 'signup', element: <SignUpForm /> },
+                { path: 'signin', element: <SignInForm /> },
+
+                // ✅ PROTECTED ROUTES BELOW:
                 {
                     index: true,
-                    element: <GigMarketplace />,
+                    element: (
+                        <RequireAuth>
+                            <GigMarketplace />
+                        </RequireAuth>
+                    ),
                 },
                 {
-                    path:'gig/:gigId',
-                    element: <GigDetails />
+                    path: 'gig/:gigId',
+                    element: (
+                        <RequireAuth>
+                            <GigDetails />
+                        </RequireAuth>
+                    ),
                 },
                 {
-                    path:'mule/gigs/booked',
-                    element: <GigHistory />
+                    path: 'mule/gigs/booked',
+                    element: (
+                        <RequireAuth>
+                            <GigHistory />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'specialtys',
-                    element: <SpecialtyList/>,
+                    element: (
+                        <RequireAuth>
+                            <SpecialtyList />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'mule/:muleId/specialtys',
-                    element: <MuleSpecialtiesSelector/>,
+                    element: (
+                        <RequireAuth>
+                            <MuleSpecialtiesSelector />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'mule/:muleId/specialtys/edit',
-                    element: <MuleSpecialtiesEditor/>,
+                    element: (
+                        <RequireAuth>
+                            <MuleSpecialtiesEditor />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'mule/:muleId',
-                    element: <MuleProfile/>,
+                    element: (
+                        <RequireAuth>
+                            <MuleProfile />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'mule/edit',
-                    element: <EditMuleProfile/>,
+                    element: (
+                        <RequireAuth>
+                            <EditMuleProfile />
+                        </RequireAuth>
+                    ),
                 },
                 {
                     path: 'mule/:muleId/gigs/pay',
-                    element: <PayHistory/>,
+                    element: (
+                        <RequireAuth>
+                            <PayHistory />
+                        </RequireAuth>
+                    ),
                 },
             ],
         },
     ],
-    {
-        basename: BASE_URL,
-    }
+    { basename: BASE_URL }
 )
 
 const rootElement = document.getElementById('root')
 if (!rootElement) {
     throw new Error('root element was not found!')
 }
-
 
 const root = ReactDOM.createRoot(rootElement)
 root.render(

@@ -1,52 +1,90 @@
-/* eslint new-cap: "off" */
 const express = require('express');
 const jwt = require('../utils/jwt');
 const hash = require('../utils/hash');
 const authMiddleware = require('../middleware/auth');
+const admin = require('firebase-admin');
 
+// eslint-disable-next-line new-cap
 const router = express.Router();
+const db = admin.firestore();
 
-// Mock database calls for now
-const users = [];
-let idCounter = 1;
-
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
     const {username, password, name, email, phone, bio} = req.body;
+
+    // Check if user already exists
+    const existing = await db
+        .collection('users')
+        .where('username', '==', username)
+        .get();
+    if (!existing.empty) {
+        return res.status(409).json({error: 'Username already exists'});
+    }
+
     const hashed = hash.hashPassword(password);
-    const user = {
-        id: idCounter++,
+    const newUserRef = await db.collection('users').add({
         username,
         password: hashed,
         name,
         email,
         phone,
         bio,
+    });
+
+    const user = {
+        id: newUserRef.id,
+        username,
+        name,
+        email,
+        phone,
     };
-    users.push(user);
 
     const token = jwt.generateJWT({id: user.id, username: user.username});
+
     res.cookie('token', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        domain: 'packmule-650ce.web.app',
     });
-    res.json({id: user.id, username: user.username, name, email, phone});
+
+    res.json({...user, token});
 });
 
-router.post('/signin', (req, res) => {
+router.post('/signin', async (req, res) => {
     const {username, password} = req.body;
-    const user = users.find((u) => u.username === username);
-    if (!user || !hash.verifyPassword(password, user.password)) {
+
+    const snapshot = await db
+        .collection('users')
+        .where('username', '==', username)
+        .get();
+    if (snapshot.empty) {
         return res.status(401).json({error: 'Invalid credentials'});
     }
+
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data();
+
+    const isValid = hash.verifyPassword(password, userData.password);
+    if (!isValid) {
+        return res.status(401).json({error: 'Invalid credentials'});
+    }
+
+    const user = {
+        id: userDoc.id,
+        username: userData.username,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+    };
+
     const token = jwt.generateJWT({id: user.id, username: user.username});
+
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        secure: true,
+        sameSite: 'none',
     });
-    res.json({id: user.id, username});
+
+    res.json({...user, token});
 });
 
 router.get('/authenticate', authMiddleware, (req, res) => {

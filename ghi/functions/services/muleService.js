@@ -1,18 +1,22 @@
-const mules = [];
+const admin = require('firebase-admin');
+const db = admin.firestore();
 
-function getById(id) {
-    return mules.find((m) => m.id === id);
+async function getById(id) {
+    const doc = await db.collection('users').doc(id).get();
+    if (!doc.exists) return null;
+    return {id: doc.id, ...doc.data()};
 }
 
-function getAll() {
-    return mules;
+async function getAll() {
+    const snapshot = await db.collection('users').get();
+    return snapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
 }
 
-function updateProfile(id, updates) {
-    const mule = getById(id);
-    if (!mule) return null;
-    Object.assign(mule, updates);
-    return mule;
+async function updateProfile(id, updates) {
+    const ref = db.collection('users').doc(id);
+    await ref.update(updates);
+    const updated = await ref.get();
+    return {id: updated.id, ...updated.data()};
 }
 
 module.exports = {getById, getAll, updateProfile};

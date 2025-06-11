@@ -1,38 +1,41 @@
-const gigs = [];
+const admin = require('firebase-admin');
+const db = admin.firestore();
 
-function getAll() {
-    return gigs;
+async function getAll() {
+    const snapshot = await db.collection('gigs').get();
+    return snapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
 }
 
-function getById(id) {
-    return gigs.find((g) => g.id === id);
+async function getById(id) {
+    const doc = await db.collection('gigs').doc(id).get();
+    if (!doc.exists) return null;
+    return {id: doc.id, ...doc.data()};
 }
 
-function addGigToMule(muleId, gigId) {
-    const mule = require('./muleService').getById(muleId);
-    if (!mule) return null;
+async function addGigToMule(muleId, gigId) {
+    const gigRef = db.collection('gigs').doc(gigId);
+    const gigDoc = await gigRef.get();
+    if (!gigDoc.exists) return null;
 
-    const gig = getById(gigId);
-    if (!gig || mule.gigs.includes(gigId)) {
-        return null;
-    }
-    gig.mules.push(muleId);
-    return gig;
+    const data = gigDoc.data();
+    const mules = data.mules || [];
+    if (mules.includes(muleId)) return null;
+
+    mules.push(muleId);
+    await gigRef.update({mules});
+    const updated = await gigRef.get();
+    return {id: updated.id, ...updated.data()};
 }
 
-function removeGigFromMule(muleId, gigId) {
-    const mule = require('./muleService').getById(muleId);
-    if (!mule) return null;
+async function removeGigFromMule(muleId, gigId) {
+    const gigRef = db.collection('gigs').doc(gigId);
+    const gigDoc = await gigRef.get();
+    if (!gigDoc.exists) return false;
 
-    const gig = getById(gigId);
-    if (!gig) return false;
-    gig.mules = gig.mules.filter((id) => id !== muleId);
+    const data = gigDoc.data();
+    const updatedMules = (data.mules || []).filter((id) => id !== muleId);
+    await gigRef.update({mules: updatedMules});
     return true;
 }
 
-module.exports = {
-    getAll,
-    getById,
-    addGigToMule,
-    removeGigFromMule,
-};
+module.exports = {getAll, getById, addGigToMule, removeGigFromMule};
