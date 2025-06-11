@@ -27,8 +27,9 @@ router.post('/signup', (req, res) => {
     const token = jwt.generateJWT({id: user.id, username: user.username});
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        secure: true,
+        sameSite: 'none',
+        domain: 'packmule-650ce.web.app',
     });
     res.json({id: user.id, username: user.username, name, email, phone});
 });

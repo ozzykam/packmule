@@ -11,7 +11,12 @@ const gigRoutes = require('./app/gigs');
 const specialtyRoutes = require('./app/specialtys');
 
 const app = express();
-app.use(cors({origin: true, credentials: true}));
+app.use(
+    cors({
+        origin: 'https://packmule-650ce.web.app',
+        credentials: true,
+    }),
+);
 app.use(express.json());
 app.use(cookieParser());
 
