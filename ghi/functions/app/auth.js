@@ -10,13 +10,22 @@ const db = admin.firestore();
 
 router.post('/signup', async (req, res) => {
     try {
-        const {username, password, name, email, phone, bio} = req.body;
+        // Defensive guard: ensure req.body exists
+        const {
+            username = '',
+            password = '',
+            name = '',
+            email = '',
+            phone = '',
+            bio = '',
+        } = req.body || {};
 
-        // Defensive check to ensure all fields are non-undefined
-        const safeName = name || '';
-        const safeEmail = email || '';
-        const safePhone = phone || '';
-        const safeBio = bio || '';
+        // Validate required fields
+        if (!username || !password) {
+            return res
+                .status(400)
+                .json({error: 'Username and password are required.'});
+        }
 
         const existing = await db
             .collection('users')
@@ -32,18 +41,18 @@ router.post('/signup', async (req, res) => {
         const newUserRef = await db.collection('users').add({
             username,
             password: hashed,
-            name: safeName,
-            email: safeEmail,
-            phone: safePhone,
-            bio: safeBio,
+            name,
+            email,
+            phone,
+            bio,
         });
 
         const user = {
             id: newUserRef.id,
             username,
-            name: safeName,
-            email: safeEmail,
-            phone: safePhone,
+            name,
+            email,
+            phone,
         };
 
         const token = jwt.generateJWT({id: user.id, username: user.username});
@@ -60,6 +69,7 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({error: 'Internal Server Error'});
     }
 });
+
 
 router.post('/signin', async (req, res) => {
     try {
