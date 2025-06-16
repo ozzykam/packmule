@@ -1,29 +1,15 @@
-FROM python:3.10-bullseye
+FROM python:3.11-slim
 
-# Upgrades pip to the latest version
-RUN python -m pip install --upgrade pip
-
-# Sets the working directory inside the container where our app will run
 WORKDIR /app
 
-# Copy the top-level files in your service's directory
-# Modify these instructions to do that
-COPY requirements.txt requirements.txt
-COPY main.py main.py
+# Copy requirements first for better Docker layer caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all of the subdirectories in your service's directory
-# Modify these instructions to do that
-# COPY queries queries
-# COPY routers routers
+# Copy all application code
+COPY . .
 
-# Installs all the python packages listed in our requirements.txt file
-RUN python -m pip install -r requirements.txt
+EXPOSE 8000
 
-# This is the command that runs when the docker container starts
-CMD uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips "*"
-
-# If you're using a relational database and want migrations
-# to be run automatically, delete the previous CMD line and
-# uncomment the following COPY and CMD lines
-# COPY migrations migrations
-# CMD python -m migrations up && uvicorn main:app --host 0.0.0.0 --port 80 --forwarded-allow-ips "*"
+# Use Python script to handle PORT environment variable properly
+CMD ["python", "run.py"]
