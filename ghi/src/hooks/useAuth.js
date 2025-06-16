@@ -1,23 +1,11 @@
-import { useMemo } from 'react'
-import { jwtDecode } from 'jwt-decode'
+import { useGetMuleQuery } from '../app/apiSlice'
 
 export function useAuth() {
-    const token = localStorage.getItem('token')
-
-    const user = useMemo(() => {
-        if (!token) return null
-        try {
-            const decoded = jwtDecode(token)
-            return decoded.user
-        } catch (e) {
-            console.error('Invalid token:', e)
-            return null
-        }
-    }, [token])
+    const { data: user, isLoading, error } = useGetMuleQuery()
 
     return {
-        token,
         user,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user && !error,
+        isLoading,
     }
 }

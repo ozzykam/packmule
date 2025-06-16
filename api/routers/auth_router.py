@@ -60,15 +60,15 @@ async def signup(
     # Convert the UserWithPW to a UserOut
     user_out = UserResponse(**user.model_dump())
 
-    # Secure cookies only if running on something besides localhost
-    secure = True if request.headers.get("origin") == "localhost" else False
+    # Secure cookies for HTTPS (production)
+    secure = request.headers.get("origin") != "http://localhost:5173"
 
     # Set a cookie with the token in it
     response.set_cookie(
         key="fast_api_token",
         value=token,
         httponly=True,
-        samesite="lax",
+        samesite="none",
         secure=secure,
     )
     return user_out

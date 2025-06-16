@@ -1,5 +1,4 @@
-import { useGetAllGigsQuery, useGetMuleQuery } from "../app/apiSlice"
-import { Link } from 'react-router-dom'
+import { useGetMuleQuery } from "../app/apiSlice"
 import GigList from "./GigList"
 import GigListForMule from "./GigListForMule"
 import SignInForm from "./SignInForm"

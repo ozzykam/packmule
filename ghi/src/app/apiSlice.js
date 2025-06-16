@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getToken } from '../utils/auth'
 
 export const API_HOST = import.meta.env.VITE_API_HOST
 
@@ -12,13 +11,6 @@ export const packmuleApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: API_HOST,
         credentials: 'include',
-        prepareHeaders: (headers) => {
-            const token = getToken()
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`)
-            }
-            return headers
-        },
     }),
     endpoints: (builder) => ({
         // AUTH ROUTES
@@ -37,16 +29,6 @@ export const packmuleApi = createApi({
                 body,
             }),
             invalidatesTags: ['Mule'],
-            async onQueryStarted(arg, { queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled
-                    if (data.token) {
-                        localStorage.setItem('token', data.token)
-                    }
-                } catch (err) {
-                    console.error('Signin error:', err)
-                }
-            },
         }),
         signup: builder.mutation({
             query: (body) => ({
@@ -55,16 +37,6 @@ export const packmuleApi = createApi({
                 body,
             }),
             invalidatesTags: ['Mule'],
-            async onQueryStarted(arg, { queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled
-                    if (data.token) {
-                        localStorage.setItem('token', data.token)
-                    }
-                } catch (err) {
-                    console.error('Signup error:', err)
-                }
-            },
         }),
 
         // GIG ROUTES
