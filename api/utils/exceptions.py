@@ -7,5 +7,5 @@ class UserDatabaseException(Exception):
     pass
 
 
-class MuleDatabaseException(Exception):
+class PackerDatabaseException(Exception):
     pass

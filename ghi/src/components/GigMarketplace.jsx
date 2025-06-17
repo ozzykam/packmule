@@ -1,16 +1,16 @@
-import { useGetMuleQuery } from "../app/apiSlice"
+import { useGetPackerQuery } from "../app/apiSlice"
 import GigList from "./GigList"
-import GigListForMule from "./GigListForMule"
+import GigListForPacker from "./GigListForPacker"
 import SignInForm from "./SignInForm"
 
 const GigMarketplace = () => {
-    const { data: mule, isLoading: isMuleLoading} = useGetMuleQuery()
+    const { data: packer, isLoading: isPackerLoading} = useGetPackerQuery()
 
-    if (isMuleLoading ) {
+    if (isPackerLoading ) {
         return <div>Loading Gigs...</div>;
     }
 
-    if (!mule) {
+    if (!packer) {
         return (
             <>
                 <div className="mx-auto w-1/2 p-4">
@@ -29,7 +29,7 @@ const GigMarketplace = () => {
     return (
         <>
             <div>
-                <GigListForMule />
+                <GigListForPacker />
             </div>
             <div>
                 <GigList />

@@ -1,19 +1,19 @@
-import { useGetAllGigsQuery, useGetBookedGigsForMuleQuery, useGetMuleQuery } from "../app/apiSlice"
+import { useGetBookedGigsForPackerQuery, useGetPackerQuery } from "../app/apiSlice"
 import { Link } from 'react-router-dom';
 
-const GigListForMule = () => {
-    const { data: gigListForMule, isLoading: isGigListForMuleLoading } = useGetBookedGigsForMuleQuery()
-    const { data: mule, isLoading: isMuleLoading } = useGetMuleQuery()
+const GigListForPacker = () => {
+    const { data: gigListForPacker, isLoading: isGigListForPackerLoading } = useGetBookedGigsForPackerQuery()
+    const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
 
-    if (isMuleLoading || isGigListForMuleLoading) {
+    if (isPackerLoading || isGigListForPackerLoading) {
         return <div>Loading Gigs...</div>;
     }
 
-    if (!mule) {
+    if (!packer) {
         return "user must be logged in"
     }
 
-    if (!gigListForMule) {
+    if (!gigListForPacker) {
         return ""
     }
 
@@ -25,7 +25,7 @@ const GigListForMule = () => {
             </h1>
         </div>
         <div className="gigs-wrapper flex">
-            {gigListForMule.map(gig => (
+            {gigListForPacker.map(gig => (
                 <Link to={`/gig/${gig.id}`} className="no-hyperlink" key={gig.id}>
                     <div className="gig-card">
                         <div className="card-body hover:brightness-[1.1] transition duration-300 ease-in-out">
@@ -49,4 +49,4 @@ const GigListForMule = () => {
     );
 }
 
-export default GigListForMule;
+export default GigListForPacker;

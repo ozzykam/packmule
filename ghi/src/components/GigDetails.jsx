@@ -2,31 +2,31 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import {
     useGetGigDetailsQuery,
-    useGetMuleQuery,
+    useGetPackerQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
-    useGetGigsForMulesListQuery,
-    useAddGigtoMuleMutation,
-    useDeleteMuleFromGigMutation,
+    useGetGigsForPackersListQuery,
+    useAddGigtoPackerMutation,
+    useDeletePackerFromGigMutation,
 } from '../app/apiSlice'
 
 const GigDetails = () => {
     const params = useParams()
-    const { data: mule, isLoading: isMuleLoading } = useGetMuleQuery()
+    const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
     const { data: gig_data, isLoading: isGigLoading } = useGetGigDetailsQuery(params.gigId)
-    const { data: gigs_for_mules_data, refetch: refectchUseGetGigsForMules } = useGetGigsForMulesListQuery(params.gigId)
+    const { data: gigs_for_packers_data, refetch: refectchUseGetGigsForPackers } = useGetGigsForPackersListQuery(params.gigId)
     const { data: specialtys_data, isLoading: isSpecialtyLoading } = useListGigSpecialtiesForGigByGigIdQuery(params.gigId)
     const [ isBooked, setIsBooked ] = useState(false)
-    const [ bookGig ] = useAddGigtoMuleMutation()
-    const [ cancelGig ] = useDeleteMuleFromGigMutation()
+    const [ bookGig ] = useAddGigtoPackerMutation()
+    const [ cancelGig ] = useDeletePackerFromGigMutation()
 
     useEffect(() => {
-        if (gigs_for_mules_data && gig_data) {
-            const booked = gigs_for_mules_data.some(gig => gig.gig_id === gig_data.id && gig.gig_status_id !== 1);
+        if (gigs_for_packers_data && gig_data) {
+            const booked = gigs_for_packers_data.some(gig => gig.gig_id === gig_data.id && gig.gig_status_id !== 1);
             setIsBooked(booked);
         }
-    }, [gigs_for_mules_data, gig_data])
+    }, [gigs_for_packers_data, gig_data])
 
-    if (isGigLoading || isSpecialtyLoading || isMuleLoading) {
+    if (isGigLoading || isSpecialtyLoading || isPackerLoading) {
         return <div>Loading...</div>
     }
 
@@ -48,15 +48,15 @@ const GigDetails = () => {
     }
 
     const handleBookGig = async () => {
-        await bookGig({ muleId: mule.id, gigId: params.gigId }).unwrap()
+        await bookGig({ packerId: packer.id, gigId: params.gigId }).unwrap()
         setIsBooked(true)
-        refectchUseGetGigsForMules()
+        refectchUseGetGigsForPackers()
     }
 
     const handleCancelGig = async () => {
         await cancelGig({ gigId: params.gigId }).unwrap()
         setIsBooked(false)
-        refectchUseGetGigsForMules()
+        refectchUseGetGigsForPackers()
     }
     console.log(params.gigId)
 

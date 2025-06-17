@@ -37,4 +37,4 @@ class DeleteGig(BaseModel):
 
 class GigInWithStatus(GigIn):
     gig_status_id: int
-    mule_id: int
+    packer_id: int

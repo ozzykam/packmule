@@ -67,27 +67,27 @@ module.exports = (db) => {
         }
     });
 
-    router.get('/mule/:muleId', authMiddleware, async (req, res) => {
+    router.get('/packer/:packerId', authMiddleware, async (req, res) => {
         try {
             const snapshot = await db
-                .collection('mule_specialtys')
-                .where('muleId', '==', req.params.muleId)
+                .collection('packer_specialtys')
+                .where('packerId', '==', req.params.packerId)
                 .get();
 
             const specialties = snapshot.docs.map((doc) => doc.data());
             res.json(specialties);
         } catch (err) {
-            console.error('Error fetching specialties for mule:', err);
+            console.error('Error fetching specialties for packer:', err);
             res.status(500).json({error: 'Internal Server Error'});
         }
     });
 
-    router.post('/mule', authMiddleware, async (req, res) => {
+    router.post('/packer', authMiddleware, async (req, res) => {
         try {
             const {specialtyId, specialtyName} = req.body;
             const exists = await db
-                .collection('mule_specialtys')
-                .where('muleId', '==', req.user.id)
+                .collection('packer_specialtys')
+                .where('packerId', '==', req.user.id)
                 .where('specialtyId', '==', specialtyId)
                 .get();
 
@@ -98,11 +98,11 @@ module.exports = (db) => {
             }
 
             const specialty = {
-                muleId: req.user.id,
+                packerId: req.user.id,
                 specialtyId,
                 specialtyName,
             };
-            await db.collection('mule_specialtys').add(specialty);
+            await db.collection('packer_specialtys').add(specialty);
             res.json(specialty);
         } catch (err) {
             console.error('Error adding specialty:', err);
@@ -110,18 +110,18 @@ module.exports = (db) => {
         }
     });
 
-    router.delete('/mule/:specialtyId', authMiddleware, async (req, res) => {
+    router.delete('/packer/:specialtyId', authMiddleware, async (req, res) => {
         try {
             const snapshot = await db
-                .collection('mule_specialtys')
-                .where('muleId', '==', req.user.id)
+                .collection('packer_specialtys')
+                .where('packerId', '==', req.user.id)
                 .where('specialtyId', '==', req.params.specialtyId)
                 .get();
 
             if (snapshot.empty) {
                 return res
                     .status(404)
-                    .json({error: 'Specialty not found for this mule'});
+                    .json({error: 'Specialty not found for this packer'});
             }
 
             const batch = db.batch();

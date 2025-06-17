@@ -12,30 +12,30 @@ async function getById(id) {
     return {id: doc.id, ...doc.data()};
 }
 
-async function addGigToMule(muleId, gigId) {
+async function addGigToPacker(packerId, gigId) {
     const gigRef = db.collection('gigs').doc(gigId);
     const gigDoc = await gigRef.get();
     if (!gigDoc.exists) return null;
 
     const data = gigDoc.data();
-    const mules = data.mules || [];
-    if (mules.includes(muleId)) return null;
+    const packers = data.packers || [];
+    if (packers.includes(packerId)) return null;
 
-    mules.push(muleId);
-    await gigRef.update({mules});
+    packers.push(packerId);
+    await gigRef.update({packers});
     const updated = await gigRef.get();
     return {id: updated.id, ...updated.data()};
 }
 
-async function removeGigFromMule(muleId, gigId) {
+async function removeGigFromPacker(packerId, gigId) {
     const gigRef = db.collection('gigs').doc(gigId);
     const gigDoc = await gigRef.get();
     if (!gigDoc.exists) return false;
 
     const data = gigDoc.data();
-    const updatedMules = (data.mules || []).filter((id) => id !== muleId);
-    await gigRef.update({mules: updatedMules});
+    const updatedPackers = (data.packers || []).filter((id) => id !== packerId);
+    await gigRef.update({packers: updatedPackers});
     return true;
 }
 
-module.exports = {getAll, getById, addGigToMule, removeGigFromMule};
+module.exports = {getAll, getById, addGigToPacker, removeGigFromPacker};

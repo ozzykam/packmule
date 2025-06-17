@@ -10,29 +10,29 @@ const getAll = async () => {
     return specialties;
 };
 
-const getByMuleId = async (muleId) => {
-    const snapshot = await db.collection('mule_specialties')
-        .where('muleId', '==', muleId)
+const getByPackerId = async (packerId) => {
+    const snapshot = await db.collection('packer_specialties')
+        .where('packerId', '==', packerId)
         .get();
-    const muleSpecialties = snapshot.docs.map((doc) => doc.data());
-    return muleSpecialties;
+    const packerSpecialties = snapshot.docs.map((doc) => doc.data());
+    return packerSpecialties;
 };
 
-const addToMule = async (muleId, specialty) => {
-    const existing = await getByMuleId(muleId);
+const addToPacker = async (packerId, specialty) => {
+    const existing = await getByPackerId(packerId);
     if (existing.some((s) => s.id === specialty.id)) {
         return null;
     }
-    await db.collection('mule_specialties').add({
-        muleId,
+    await db.collection('packer_specialties').add({
+        packerId,
         ...specialty,
     });
     return specialty;
 };
 
-const removeFromMule = async (muleId, specialtyId) => {
-    const snapshot = await db.collection('mule_specialties')
-        .where('muleId', '==', muleId)
+const removeFromPacker = async (packerId, specialtyId) => {
+    const snapshot = await db.collection('packer_specialties')
+        .where('packerId', '==', packerId)
         .where('id', '==', specialtyId)
         .get();
     const batch = db.batch();
@@ -45,7 +45,7 @@ const removeFromMule = async (muleId, specialtyId) => {
 
 module.exports = {
     getAll,
-    getByMuleId,
-    addToMule,
-    removeFromMule,
+    getByPackerId,
+    addToPacker,
+    removeFromPacker,
 };

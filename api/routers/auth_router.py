@@ -103,15 +103,15 @@ async def signin(
     # Generate a JWT token
     token = generate_jwt(user)
 
-    # Secure cookies only if running on something besides localhost
-    secure = True if request.headers.get("origin") == "localhost" else False
+    # Secure cookies for HTTPS (production)
+    secure = request.headers.get("origin") != "http://localhost:5173"
 
     # Set a cookie with the token in it
     response.set_cookie(
         key="fast_api_token",
         value=token,
         httponly=True,
-        samesite="lax",
+        samesite="none",
         secure=secure,
     )
 
@@ -148,12 +148,12 @@ async def signout(
     """
     Signs the user out by deleting their JWT Cookie
     """
-    # Secure cookies only if running on something besides localhost
-    secure = True if request.headers.get("origin") == "localhost" else False
+    # Secure cookies for HTTPS (production)
+    secure = request.headers.get("origin") != "http://localhost:5173"
 
     # Delete the cookie
     response.delete_cookie(
-        key="fast_api_token", httponly=True, samesite="lax", secure=secure
+        key="fast_api_token", httponly=True, samesite="none", secure=secure
     )
 
     # There's no need to return anything in the response.

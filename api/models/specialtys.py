@@ -19,11 +19,11 @@ class DeleteSpecialty(BaseModel):
     success: bool
 
 
-class MuleSpecialtyIn(BaseModel):
+class PackerSpecialtyIn(BaseModel):
     specialty_id: int
 
 
-class MuleSpecialtyOut(MuleSpecialtyIn):
+class PackerSpecialtyOut(PackerSpecialtyIn):
     id: int
     user_id: int
     specialty_type_id: int

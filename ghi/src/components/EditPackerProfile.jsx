@@ -1,25 +1,41 @@
 import { useState, useEffect } from 'react'
-import { useEditMuleProfileMutation, useGetMuleQuery, useGetMuleProfileQuery } from '../app/apiSlice'
-import { useNavigate, Link } from 'react-router-dom'
+import { useEditPackerProfileMutation, useGetPackerQuery, useGetPackerProfileQuery } from '../app/apiSlice'
+import { useNavigate } from 'react-router-dom'
 import SignInForm from './SignInForm'
 
-const EditMuleProfile = () => {
+const EditPackerProfile = () => {
     const navigate = useNavigate()
-    const [errorMessage, setErrorMessage] = useState('')
+    const [errorMessage] = useState('')
     const [username, setUsername] = useState('')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [bio, setBio] = useState('')
-    const [editProfile, editPofileStatus] = useEditMuleProfileMutation()
-    const { data: logged_user, isLoading: isLoggedUserLoading } = useGetMuleQuery()
-    const { data: mule, isLoading: isMuleLoading } = useGetMuleProfileQuery()
+    const [editProfile, editPofileStatus] = useEditPackerProfileMutation()
+    const { data: logged_user, isLoading: isLoggedUserLoading } = useGetPackerQuery()
+    const { data: packer, isLoading: isPackerLoading } = useGetPackerProfileQuery()
 
-    if (isMuleLoading || isLoggedUserLoading) {
+    useEffect(() => {
+        if (packer) {
+            setUsername(packer.username)
+            setName(packer.name)
+            setEmail(packer.email)
+            setPhone(packer.phone)
+            setBio(packer.bio)
+        }
+    }, [packer])
+    
+    useEffect(() => {
+        if (editPofileStatus.isSuccess) {
+            navigate(`/packer/${logged_user.id}`)
+        }
+    }, [editPofileStatus, navigate, logged_user?.id])
+
+    if (isPackerLoading || isLoggedUserLoading) {
         return <div>Loading Profile...</div>
     }
 
-    if (!mule) {
+    if (!packer) {
         return (
             <>
                 <div className="mx-auto w-1/2 p-4">
@@ -31,21 +47,6 @@ const EditMuleProfile = () => {
             </>
         )
     }
-
-    useEffect(() => {
-        if (mule) {
-            setUsername(mule.username);
-            setName(mule.name);
-            setEmail(mule.email);
-            setPhone(mule.phone);
-            setBio(mule.bio);
-        }
-    }, [mule]);
-    useEffect(() => {
-        if (editPofileStatus.isSuccess ) {
-        navigate(`/mule/${logged_user.id}`);
-        }
-    }, [editPofileStatus, navigate])
 
     async function handleFormSubmit(e) {
         e.preventDefault()
@@ -70,7 +71,7 @@ const EditMuleProfile = () => {
                         type="text"
                         id="username"
                         name="username"
-                        defaultValue={mule.username}
+                        defaultValue={packer.username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="Enter Username"
                         className="appearance-none block w-full bg-gray-100 hover:bg-gray-200 text-gray-700
@@ -82,7 +83,7 @@ const EditMuleProfile = () => {
                         type="text"
                         id="name"
                         name="name"
-                        defaultValue={mule.name}
+                        defaultValue={packer.name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Enter Your Full Name"
                         className="appearance-none block w-full bg-gray-100 hover:bg-gray-200 text-gray-700
@@ -94,7 +95,7 @@ const EditMuleProfile = () => {
                         type="email"
                         id="email"
                         name="email"
-                        defaultValue={mule.email}
+                        defaultValue={packer.email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter Email"
                         className="appearance-none block w-full bg-gray-100 hover:bg-gray-200 text-gray-700
@@ -107,7 +108,7 @@ const EditMuleProfile = () => {
                         id="phone"
                         name="phone"
                         pattern="\d{3}-\d{3}-\d{4}"
-                        defaultValue={mule.phone}
+                        defaultValue={packer.phone}
                         title="ex: 111-222-3333"
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="Enter Phone Number"
@@ -119,7 +120,7 @@ const EditMuleProfile = () => {
                     <textarea
                         id="bio"
                         name="bio"
-                        defaultValue={mule.bio}
+                        defaultValue={packer.bio}
                         onChange={(e) => setBio(e.target.value)}
                         placeholder="Tell us about yourself!"
                         rows="5"
@@ -130,7 +131,7 @@ const EditMuleProfile = () => {
                     />
                 </div>
                 <p className="px-10 pl-0 mb-7">
-                    {mule.bio.length}/280 characters
+                    {packer.bio.length}/280 characters
                 </p>
                 <div className='flex justify-end'>
                     <button
@@ -147,4 +148,4 @@ const EditMuleProfile = () => {
     )
 }
 
-export default EditMuleProfile
+export default EditPackerProfile

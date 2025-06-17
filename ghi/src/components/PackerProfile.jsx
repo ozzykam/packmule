@@ -1,19 +1,18 @@
 import { useParams, Link } from "react-router-dom"
-import { useGetMuleProfileQuery, useGetMuleQuery, useListSpecialtiesForMuleQuery } from "../app/apiSlice"
+import { useGetPackerProfileQuery, useGetPackerQuery, useListSpecialtiesForPackerQuery } from "../app/apiSlice"
 import SignInForm from "./SignInForm";
-import EditMuleProfile from "./EditMuleProfile";
 
-const MuleProfile = () => {
+const PackerProfile = () => {
     const params = useParams();
-    const {data: user_logged, isLoading: isUserLoggedLoading } = useGetMuleQuery()
-    const {data: mule, isLoading: isMuleLoading } = useGetMuleProfileQuery()
-    const {data: mule_specialties, isLoading: isMuleSpecialtysLoading } = useListSpecialtiesForMuleQuery(params.muleId)
+    const {data: user_logged, isLoading: isUserLoggedLoading } = useGetPackerQuery()
+    const {data: packer, isLoading: isPackerLoading } = useGetPackerProfileQuery()
+    const {data: packer_specialties, isLoading: isPackerSpecialtysLoading } = useListSpecialtiesForPackerQuery(params.packerId)
 
-    if (isUserLoggedLoading || isMuleLoading || isMuleSpecialtysLoading) {
+    if (isUserLoggedLoading || isPackerLoading || isPackerSpecialtysLoading) {
         return <div>Loading...</div>
     }
 
-    if (!mule) {
+    if (!packer) {
         return (
             <>
                 <div className="mx-auto w-1/2 p-4">
@@ -31,10 +30,10 @@ const MuleProfile = () => {
     let experienceSpecialties = [];
     let vehicleSpecialties = [];
 
-    if (mule_specialties && mule_specialties.length > 0) {
-        equipmentSpecialties = mule_specialties.filter(specialty => specialty.specialty_type_id === 1);
-        experienceSpecialties = mule_specialties.filter(specialty => specialty.specialty_type_id === 2);
-        vehicleSpecialties = mule_specialties.filter(specialty => specialty.specialty_type_id === 3);
+    if (packer_specialties && packer_specialties.length > 0) {
+        equipmentSpecialties = packer_specialties.filter(specialty => specialty.specialty_type_id === 1);
+        experienceSpecialties = packer_specialties.filter(specialty => specialty.specialty_type_id === 2);
+        vehicleSpecialties = packer_specialties.filter(specialty => specialty.specialty_type_id === 3);
     }
     console.log(equipmentSpecialties)
 
@@ -44,14 +43,14 @@ const MuleProfile = () => {
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <div className="flex flex-wrap ml-8">
                         <h2 className="ml-0 w-full">
-                            Welcome, {mule.username}
+                            Welcome, {packer.username}
                         </h2>
                         <div className="font-semibold w-full">Email</div>
-                        <div className="pb-5 w-full">{mule.email}</div>
+                        <div className="pb-5 w-full">{packer.email}</div>
                         <div className="font-semibold w-full">Phone</div>
-                        <div className="pb-5 w-full">{mule.phone}</div>
+                        <div className="pb-5 w-full">{packer.phone}</div>
                         <div className="font-semibold w-full">Bio</div>
-                        <div className="pb-5 w-full">{mule.bio}</div>
+                        <div className="pb-5 w-full">{packer.bio}</div>
                         <button
                             className="bg-gradient-to-br from-orange-600 to-orange-400 text-white
                                 font-bold py-4 px-8 rounded-full shadow-[0_10px_20px_-9px_rgba(227,136,0,1)] focus:outline-none
@@ -59,13 +58,13 @@ const MuleProfile = () => {
                                 hover:shadow-[0_35px_60px_-9px_rgba(227,136,0,0.7)]
                                 transition duration-200 ease-in-out "
                         >
-                            <Link to="/mule/edit">Edit Profile</Link>
+                            <Link to="/packer/edit">Edit Profile</Link>
                         </button>
                     </div>
                 </div>
                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <div>
-                        <h2 className="ml-0 w-full">Mule Specialties</h2>
+                        <h2 className="ml-0 w-full">Packer Specialties</h2>
                         <div>
                             {equipmentSpecialties.length > 0 && (
                                 <>
@@ -146,7 +145,7 @@ const MuleProfile = () => {
                             hover:shadow-[0_35px_60px_-9px_rgba(227,136,0,0.7)]
                             transition duration-200 ease-in-out"
                     >
-                        <Link to={`/mule/${user_logged.id}/specialtys/edit`}>
+                        <Link to={`/packer/${user_logged.id}/specialtys/edit`}>
                             Add or Edit Specialties
                         </Link>
                     </button>
@@ -156,4 +155,4 @@ const MuleProfile = () => {
     )
 }
 
-export default MuleProfile
+export default PackerProfile

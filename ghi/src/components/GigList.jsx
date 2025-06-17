@@ -1,15 +1,15 @@
-import { useGetAllGigsQuery, useGetGigsForMulesListQuery} from "../app/apiSlice"
+import { useGetAllGigsQuery, useGetGigsForPackersListQuery} from "../app/apiSlice"
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 
 const GigList = () => {
     const { data: gigDetailList, isLoading: isGigDetailListLoading, refetch: refectchUseGetAllGigsQuery } = useGetAllGigsQuery()
-    const { data: gigList, isLoading: isGigListLoading, refetch: refectchUseGetGigsForMulesQuery } = useGetGigsForMulesListQuery()
+    const { data: gigList, isLoading: isGigListLoading, refetch: refectchUseGetGigsForPackersQuery } = useGetGigsForPackersListQuery()
 
     useEffect(() => {
         refectchUseGetAllGigsQuery()
-        refectchUseGetGigsForMulesQuery()
-    }, [refectchUseGetAllGigsQuery, refectchUseGetGigsForMulesQuery])
+        refectchUseGetGigsForPackersQuery()
+    }, [refectchUseGetAllGigsQuery, refectchUseGetGigsForPackersQuery])
 
 
     if (isGigDetailListLoading || isGigListLoading ) {

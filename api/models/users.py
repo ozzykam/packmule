@@ -71,12 +71,12 @@ class UserList(BaseModel):
     users: list[UserDetails]
 
 
-class GigsForMules(BaseModel):
+class GigsForPackers(BaseModel):
     id: int
     gig_id: int
-    mule_id: int
+    packer_id: int
     gig_status_id: int
 
 
-class GigsForMulesUpdateIn(BaseModel):
+class GigsForPackersUpdateIn(BaseModel):
     gig_status_id: int

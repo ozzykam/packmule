@@ -14,13 +14,13 @@ export const packmuleApi = createApi({
     }),
     endpoints: (builder) => ({
         // AUTH ROUTES
-        getMule: builder.query({
+        getPacker: builder.query({
             query: () => ({ url: '/api/auth/authenticate' }),
-            providesTags: ['Mule'],
+            providesTags: ['Packer'],
         }),
         signout: builder.mutation({
             query: () => ({ url: '/api/auth/signout', method: 'DELETE' }),
-            invalidatesTags: ['Mule'],
+            invalidatesTags: ['Packer'],
         }),
         signin: builder.mutation({
             query: (body) => ({
@@ -28,7 +28,7 @@ export const packmuleApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Mule'],
+            invalidatesTags: ['Packer'],
         }),
         signup: builder.mutation({
             query: (body) => ({
@@ -36,7 +36,7 @@ export const packmuleApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Mule'],
+            invalidatesTags: ['Packer'],
         }),
 
         // GIG ROUTES
@@ -54,79 +54,79 @@ export const packmuleApi = createApi({
             query: (gigId) => ({ url: `/api/gig/${gigId}` }),
             invalidatesTags: ['GigDetails'],
         }),
-        addGigtoMule: builder.mutation({
+        addGigtoPacker: builder.mutation({
             query: ({ gigId, body }) => ({
-                url: `/api/mule/gigs/${gigId}`,
+                url: `/api/packer/gigs/${gigId}`,
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['MuleGigs'],
+            invalidatesTags: ['PackerGigs'],
         }),
-        getAllGigsForMulesList: builder.query({
-            query: () => ({ url: '/api/mule/gigs/all' }),
+        getAllGigsForPackersList: builder.query({
+            query: () => ({ url: '/api/packer/gigs/all' }),
         }),
-        getGigsForMulesList: builder.query({
-            query: () => ({ url: '/api/mules/gigs' }),
+        getGigsForPackersList: builder.query({
+            query: () => ({ url: '/api/packers/gigs' }),
         }),
-        updateGigForMule: builder.mutation({
+        updateGigForPacker: builder.mutation({
             query: ({ gigId, body }) => ({
-                url: `/api/mule/gig/${gigId}`,
+                url: `/api/packer/gig/${gigId}`,
                 method: 'PUT',
                 body,
             }),
-            invalidatesTags: ['MuleGigs'],
+            invalidatesTags: ['PackerGigs'],
         }),
-        deleteMuleFromGig: builder.mutation({
+        deletePackerFromGig: builder.mutation({
             query: ({ gigId }) => ({
-                url: `/api/mule/gigs/${gigId}`,
+                url: `/api/packer/gigs/${gigId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['MuleGigs'],
+            invalidatesTags: ['PackerGigs'],
         }),
-        getBookedGigsForMule: builder.query({
-            query: () => ({ url: '/api/mule/gigs/booked' }),
-            providesTags: ['MuleGigs'],
+        getBookedGigsForPacker: builder.query({
+            query: () => ({ url: '/api/packer/gigs/booked' }),
+            providesTags: ['PackerGigs'],
         }),
-        getGigsForMuleWithStatus: builder.query({
-            query: (muleId) => ({ url: `/api/mule/${muleId}/gigs` }),
+        getGigsForPackerWithStatus: builder.query({
+            query: (packerId) => ({ url: `/api/packer/${packerId}/gigs` }),
         }),
 
         // SPECIALTY ROUTES
         getAllSpecialtys: builder.query({
             query: () => ({ url: '/api/specialtys' }),
         }),
-        listSpecialtiesForMule: builder.query({
-            query: (muleId) => ({ url: `/api/mule/${muleId}/specialtys` }),
-            providesTags: ['MuleSpecialtys'],
+        listSpecialtiesForPacker: builder.query({
+            query: (packerId) => ({ url: `/api/packer/${packerId}/specialtys` }),
+            providesTags: ['PackerSpecialtys'],
         }),
-        addMuleSpecialty: builder.mutation({
+        addPackerSpecialty: builder.mutation({
             query: (body) => ({
-                url: '/api/mule/specialtys',
+                url: '/api/packer/specialtys',
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['MuleSpecialtys'],
+            invalidatesTags: ['PackerSpecialtys'],
         }),
-        deleteMuleSpecialty: builder.mutation({
-            query: ({ muleId, specialtyId }) => ({
-                url: `/api/mule/${muleId}/specialtys/${specialtyId}`,
+        deletePackerSpecialty: builder.mutation({
+            query: ({ packerId, specialtyId }) => ({
+                url: `/api/packer/${packerId}/specialtys/${specialtyId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['MuleSpecialtys'],
+            invalidatesTags: ['PackerSpecialtys'],
         }),
 
-        // MULE PROFILE ROUTES
-        getMuleProfile: builder.query({
-            query: () => ({ url: '/api/mule' }),
-            providesTags: ['MuleProfile'],
+        // PACKER PROFILE ROUTES
+        getPackerProfile: builder.query({
+            query: () => ({ url: '/api/packer' }),
+            providesTags: ['PackerProfile'],
         }),
-        editMuleProfile: builder.mutation({
+        editPackerProfile: builder.mutation({
             query: (body) => ({
-                url: 'api/mule/edit',
+                url: 'api/packer/edit',
                 method: 'PUT',
                 body,
             }),
-            invalidatesTags: ['MuleProfile'],
+            invalidatesTags: ['PackerProfile'],
         }),
     }),
 })
@@ -136,21 +136,21 @@ export const {
     useGetAllGigsQuery,
     useGetGigDetailsQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
-    useGetMuleQuery,
+    useGetPackerQuery,
     useSignoutMutation,
     useSigninMutation,
     useSignupMutation,
     useGetAllSpecialtysQuery,
-    useListSpecialtiesForMuleQuery,
-    useAddMuleSpecialtyMutation,
-    useDeleteMuleSpecialtyMutation,
-    useGetAllGigsForMulesListQuery,
-    useGetGigsForMulesListQuery,
-    useAddGigtoMuleMutation,
-    useEditMuleProfileMutation,
-    useGetMuleProfileQuery,
-    useUpdateGigForMuleMutation,
-    useGetBookedGigsForMuleQuery,
-    useDeleteMuleFromGigMutation,
-    useGetGigsForMuleWithStatusQuery,
+    useListSpecialtiesForPackerQuery,
+    useAddPackerSpecialtyMutation,
+    useDeletePackerSpecialtyMutation,
+    useGetAllGigsForPackersListQuery,
+    useGetGigsForPackersListQuery,
+    useAddGigtoPackerMutation,
+    useEditPackerProfileMutation,
+    useGetPackerProfileQuery,
+    useUpdateGigForPackerMutation,
+    useGetBookedGigsForPackerQuery,
+    useDeletePackerFromGigMutation,
+    useGetGigsForPackerWithStatusQuery,
 } = packmuleApi

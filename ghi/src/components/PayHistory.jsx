@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useGetGigsForMuleWithStatusQuery } from "../app/apiSlice";
+import { useEffect, useState } from "react";
+import { useGetGigsForPackerWithStatusQuery } from "../app/apiSlice";
 import { API_HOST } from "../app/apiSlice";
 
 const PayHistory = () => {
-    const [gigMuleHistory, setGigMuleHistory] = useState([]);
-    const { data: gigListAll, isLoading: isListMuleLoading } = useGetGigsForMuleWithStatusQuery();
+    const [gigPackerHistory, setGigPackerHistory] = useState([]);
+    const { data: gigListAll, isLoading: isListPackerLoading } = useGetGigsForPackerWithStatusQuery();
 
     useEffect(() => {
         if (gigListAll && gigListAll.length > 0) {
-        const gigHistoryForMules = gigListAll.filter((gig) => gig.gig_status_id === 3);
-        const muleId = gigHistoryForMules[0].mule_id;
-        fetch(`${API_HOST}/api/users/${muleId}/gigs`, {
+        const gigHistoryForPackers = gigListAll.filter((gig) => gig.gig_status_id === 3);
+        const packerId = gigHistoryForPackers[0].packer_id;
+        fetch(`${API_HOST}/api/users/${packerId}/gigs`, {
             method: "GET",
             credentials: "include",
         })
         .then((res) => res.json())
         .then((data) => {
             const filtered = data.filter((gig) => gig.gig_status_id === 3);
-            setGigMuleHistory(filtered);
+            setGigPackerHistory(filtered);
             })
 
         .catch((e) => console.log(e));
@@ -33,7 +33,7 @@ const PayHistory = () => {
         return statusMap[statusId] || "Unknown";
     };
 
-    if (isListMuleLoading) {
+    if (isListPackerLoading) {
         return <div>Loading Pay History...</div>;
     }
 
@@ -87,7 +87,7 @@ const PayHistory = () => {
                 </tr>
             </thead>
             <tbody>
-                {gigMuleHistory.map((gig) => {
+                {gigPackerHistory.map((gig) => {
                 return (
                     <tr key={gig.id}>
                     <td scope="col" className="px-6 py-3 border-b w-4/12">{gig.title}</td>

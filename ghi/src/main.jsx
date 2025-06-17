@@ -7,10 +7,10 @@ import SignUpForm from './components/SignUpForm'
 import GigMarketplace from './components/GigMarketplace'
 import GigDetails from './components/GigDetails'
 import SpecialtyList from './components/SpecialtyList'
-import MuleSpecialtiesSelector from './components/MuleSpecialtiesSelector'
-import MuleSpecialtiesEditor from './components/MuleSpecialtiesEditor'
-import MuleProfile from './components/MuleProfile'
-import EditMuleProfile from './components/EditMuleProfile'
+import PackerSpecialtiesSelector from './components/PackerSpecialtiesSelector'
+import PackerSpecialtiesEditor from './components/PackerSpecialtiesEditor'
+import PackerProfile from './components/PackerProfile'
+import EditPackerProfile from './components/EditPackerProfile'
 import GigHistory from './components/GigHistory'
 import PayHistory from './components/PayHistory'
 import App from './App'
@@ -52,7 +52,7 @@ const router = createBrowserRouter(
                     ),
                 },
                 {
-                    path: 'mule/gigs/booked',
+                    path: 'packer/gigs/booked',
                     element: (
                         <RequireAuth>
                             <GigHistory />
@@ -68,39 +68,39 @@ const router = createBrowserRouter(
                     ),
                 },
                 {
-                    path: 'mule/:muleId/specialtys',
+                    path: 'packer/:packerId/specialtys',
                     element: (
                         <RequireAuth>
-                            <MuleSpecialtiesSelector />
+                            <PackerSpecialtiesSelector />
                         </RequireAuth>
                     ),
                 },
                 {
-                    path: 'mule/:muleId/specialtys/edit',
+                    path: 'packer/:packerId/specialtys/edit',
                     element: (
                         <RequireAuth>
-                            <MuleSpecialtiesEditor />
+                            <PackerSpecialtiesEditor />
                         </RequireAuth>
                     ),
                 },
                 {
-                    path: 'mule/:muleId',
+                    path: 'packer/:packerId',
                     element: (
                         <RequireAuth>
-                            <MuleProfile />
+                            <PackerProfile />
                         </RequireAuth>
                     ),
                 },
                 {
-                    path: 'mule/edit',
+                    path: 'packer/edit',
                     element: (
                         <RequireAuth>
-                            <EditMuleProfile />
+                            <EditPackerProfile />
                         </RequireAuth>
                     ),
                 },
                 {
-                    path: 'mule/:muleId/gigs/pay',
+                    path: 'packer/:packerId/gigs/pay',
                     element: (
                         <RequireAuth>
                             <PayHistory />

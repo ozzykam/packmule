@@ -190,11 +190,11 @@ module.exports = (db) => {
         }
     });
 
-    // POST /api/gigs/:id/assign - Assign gig to current mule
+    // POST /api/gigs/:id/assign - Assign gig to current packer
     router.post('/:id/assign', authMiddleware, async (req, res) => {
         try {
             const assignment = {
-                muleId: req.user.id,
+                packerId: req.user.id,
                 gigId: req.params.id,
                 status: 'pending',
                 assignedAt: new Date().toISOString(),
@@ -203,7 +203,7 @@ module.exports = (db) => {
             // Prevent duplicates
             const existing = await db
                 .collection('gig_assignments')
-                .where('muleId', '==', req.user.id)
+                .where('packerId', '==', req.user.id)
                 .where('gigId', '==', req.params.id)
                 .get();
 
@@ -221,12 +221,12 @@ module.exports = (db) => {
         }
     });
 
-    // DELETE /api/gigs/:id/unassign - Remove gig assignment from current mule
+    // DELETE /api/gigs/:id/unassign - Remove gig assignment from current packer
     router.delete('/:id/unassign', authMiddleware, async (req, res) => {
         try {
             const assignments = await db
                 .collection('gig_assignments')
-                .where('muleId', '==', req.user.id)
+                .where('packerId', '==', req.user.id)
                 .where('gigId', '==', req.params.id)
                 .get();
 

@@ -1,7 +1,7 @@
-import { useGetMuleQuery } from '../app/apiSlice'
+import { useGetPackerQuery } from '../app/apiSlice'
 
 export function useAuth() {
-    const { data: user, isLoading, error } = useGetMuleQuery()
+    const { data: user, isLoading, error } = useGetPackerQuery()
 
     return {
         user,

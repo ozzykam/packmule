@@ -104,13 +104,13 @@ def remove_gig_specialty(
 
 
 @router.get(
-    "/api/users/{mule_id}/gigs", response_model=List[GigInWithStatus]
+    "/api/users/{packer_id}/gigs", response_model=List[GigInWithStatus]
 )
-def get_gigs_for_mule_with_status(
-    mule_id: int,
+def get_gigs_for_packer_with_status(
+    packer_id: int,
     queries: GigQueries = Depends(),
     user: UserResponse = Depends(try_get_jwt_user_data),
 ) -> List[GigInWithStatus]:
-    if user is None or user.id != mule_id:
+    if user is None or user.id != packer_id:
         raise user_exception
-    return queries.get_gigs_for_mule_with_status(mule_id)
+    return queries.get_gigs_for_packer_with_status(packer_id)

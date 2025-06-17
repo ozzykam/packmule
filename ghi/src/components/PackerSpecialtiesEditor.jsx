@@ -2,51 +2,45 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
   useGetAllSpecialtysQuery,
-  useAddMuleSpecialtyMutation,
-  useListSpecialtiesForMuleQuery,
-  useDeleteMuleSpecialtyMutation,
-  useGetMuleQuery,
+  useAddPackerSpecialtyMutation,
+  useListSpecialtiesForPackerQuery,
+  useDeletePackerSpecialtyMutation,
+  useGetPackerQuery,
 } from '../app/apiSlice';
-
 import SignInForm from './SignInForm';
 
-const MuleSpecialtiesSelector = () => {
+const PackerSpecialtiesEditor = () => {
   const navigate = useNavigate();
-  const { muleId } = useParams();
-  const { data: mule, isLoading:isMuleLoading } = useGetMuleQuery()
+  const { packerId } = useParams();
+  const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery();
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedSpecialtys, setSelectedSpecialtys] = useState([]);
-  const { data: muleSpecialtys, isLoading: isMuleSpecialtysLoading } = useListSpecialtiesForMuleQuery(muleId);
+  const { data: packerSpecialtys, isLoading: isPackerSpecialtysLoading } = useListSpecialtiesForPackerQuery(packerId);
   const { data: specialtys, isLoading: isSpecialtysLoading } = useGetAllSpecialtysQuery();
-  const [addMuleSpecialty, { isSuccess, isError, error }] = useAddMuleSpecialtyMutation();
-  const [deleteMuleSpecialty] = useDeleteMuleSpecialtyMutation();
-
+  const [addPackerSpecialty, { isSuccess, isError, error }] = useAddPackerSpecialtyMutation();
+  const [deletePackerSpecialty] = useDeletePackerSpecialtyMutation();
 
   useEffect(() => {
-    if (isSuccess) navigate('/')
+    if (isSuccess) navigate(`/packer/${packerId}`)
   }, [isSuccess, isError, error, navigate]);
 
   useEffect(() => {
-    if (muleSpecialtys) {
-      setSelectedSpecialtys(muleSpecialtys.map(specialty => specialty.specialty_id.toString()));
+    if (packerSpecialtys) {
+      setSelectedSpecialtys(packerSpecialtys.map(specialty => specialty.specialty_id.toString()));
     }
-  }, [muleSpecialtys]);
+  }, [packerSpecialtys]);
 
-  if (isSpecialtysLoading || isMuleSpecialtysLoading || isMuleLoading) {
-    return <div>Loading specialties...</div>
-  }
-
-  if (!mule) {
-    return (
-        <>
-      <div className="mx-auto w-1/2 p-4">
-        <h1> Please log in or sign up to continue!</h1>
-      </div>
-      <div>
-        <SignInForm />
-      </div>
-        </>
-    )
+  if (!packer) {
+      return (
+          <>
+              <div className="mx-auto w-1/2 p-4">
+                  <h1> Please log in or sign up to continue!</h1>
+              </div>
+              <div>
+                  <SignInForm />
+              </div>
+          </>
+      )
   }
 
   const handleSpecialtyChange = (event) => {
@@ -62,27 +56,30 @@ const MuleSpecialtiesSelector = () => {
     e.preventDefault();
     try {
       for (let specialty of selectedSpecialtys) {
-        if (!muleSpecialtys.some(existing => existing.specialty_id === parseInt(specialty))) {
-          await addMuleSpecialty({
+        if (!packerSpecialtys.some(existing => existing.specialty_id === parseInt(specialty))) {
+          await addPackerSpecialty({
             specialty_id: parseInt(specialty),
           }).unwrap();
         }
       }
 
-      for (let specialty of muleSpecialtys) {
+      for (let specialty of packerSpecialtys) {
         if (!selectedSpecialtys.includes(specialty.specialty_id.toString())) {
-          await deleteMuleSpecialty({
-            muleId: parseInt(muleId),
+          await deletePackerSpecialty({
+            packerId: parseInt(packerId),
             specialtyId: parseInt(specialty.specialty_id)
           }).unwrap();
         }
       }
-
-      navigate(`/`)
+      navigate(`/packer/${packerId}`)
     } catch (err) {
-      console.error('Failed to update specialties:', err)
-      setErrorMessage('Failed to update specialties')
+      console.error('Failed to update specialties:', err);
+      setErrorMessage('Failed to update specialties');
     }
+  }
+
+  if (isSpecialtysLoading || isPackerSpecialtysLoading || isPackerLoading) {
+    return <div>Loading specialties...</div>;
   }
 
   const equipmentSpecialties = specialtys.filter(specialty => specialty.specialty_type_id === 1 )
@@ -204,9 +201,9 @@ const MuleSpecialtiesSelector = () => {
                       className="
             text-gray-700
             font-bold py-4 px-8 focus:outline-none focus:shadow-outline"
-                      to={`/`}
+                      to={`/packer/${packerId}`}
                   >
-                      Skip
+                      Cancel
                   </Link>
                   <button
                       type="submit"
@@ -226,4 +223,4 @@ const MuleSpecialtiesSelector = () => {
   )
 }
 
-export default MuleSpecialtiesSelector
+export default PackerSpecialtiesEditor

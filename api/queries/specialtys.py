@@ -4,7 +4,7 @@ from typing import List
 from models.specialtys import (
     SpecialtyIn,
     SpecialtyOut,
-    MuleSpecialtyOut,
+    PackerSpecialtyOut,
     GigSpecialtyOut,
 )
 from queries.pool import pool
@@ -89,17 +89,17 @@ class SpecialtyQueries:
                     specialty_type_id=record[3],
                 )
 
-    def create_mule_specialty(
+    def create_packer_specialty(
         self,
         user_id: int,
         specialty_id: int,
         specialty_type_id: int,
         specialty_name: str,
-    ) -> MuleSpecialtyOut:
+    ) -> PackerSpecialtyOut:
         try:
             with pool.connection() as conn:
                 with conn.cursor(
-                    row_factory=class_row(MuleSpecialtyOut)
+                    row_factory=class_row(PackerSpecialtyOut)
                 ) as cur:
                     cur.execute(
                         """
@@ -124,24 +124,24 @@ class SpecialtyQueries:
                             specialty_name,
                         ),
                     )
-                    mule_special = cur.fetchone()
-                    if not mule_special:
+                    packer_special = cur.fetchone()
+                    if not packer_special:
                         raise HTTPException(
                             status_code=404, detail="Specialty not found"
                         )
-                    return mule_special
+                    return packer_special
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=401, detail="Could not create mule specialty"
+                status_code=401, detail="Could not create packer specialty"
             )
 
-    def get_mule_specialty_by_id(
+    def get_packer_specialty_by_id(
         self, user_id: int, specialty_id: int
-    ) -> MuleSpecialtyOut:
+    ) -> PackerSpecialtyOut:
         with pool.connection() as conn:
-            with conn.cursor() as mule_specialty_db:
-                specialty = mule_specialty_db.execute(
+            with conn.cursor() as packer_specialty_db:
+                specialty = packer_specialty_db.execute(
                     """
                     SELECT
                         us.id,
@@ -163,18 +163,18 @@ class SpecialtyQueries:
                 record = specialty.fetchone()
                 if record is None:
                     return None
-                return MuleSpecialtyOut(
+                return PackerSpecialtyOut(
                     id=record[0],
                     user_id=record[1],
                     specialty_id=record[2],
                     specialty_type_id=record[3],
                 )
 
-    def delete_mule_specialty(self, user_id: int, specialty_id: int) -> bool:
+    def delete_packer_specialty(self, user_id: int, specialty_id: int) -> bool:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as mule_specialty_db:
-                    mule_specialty_db.execute(
+                with conn.cursor() as packer_specialty_db:
+                    packer_specialty_db.execute(
                         """
                         DELETE FROM user_specialties
                         WHERE user_id = %s AND specialty_id = %s
@@ -185,16 +185,16 @@ class SpecialtyQueries:
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=401, detail="Could not delete mule specialty"
+                status_code=401, detail="Could not delete packer specialty"
             )
 
-    def get_all_specialties_by_mule(
+    def get_all_specialties_by_packer(
         self, user_id: int
-    ) -> List[MuleSpecialtyOut]:
+    ) -> List[PackerSpecialtyOut]:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as mule_specialtys_db:
-                    record = mule_specialtys_db.execute(
+                with conn.cursor() as packer_specialtys_db:
+                    record = packer_specialtys_db.execute(
                         """
                         SELECT
                             us.id,
@@ -213,20 +213,20 @@ class SpecialtyQueries:
                     if record is None:
                         return []
                     return [
-                        MuleSpecialtyOut(
+                        PackerSpecialtyOut(
                             id=record[0],
                             user_id=record[1],
                             specialty_id=record[2],
                             specialty_type_id=record[3],
                             specialty_name=record[4],
                         )
-                        for record in mule_specialtys_db
+                        for record in packer_specialtys_db
                     ]
         except Exception as e:
             print(e)
             raise HTTPException(
                 status_code=401,
-                detail="Could not retrieve all mule specialties",
+                detail="Could not retrieve all packer specialties",
             )
 
     def get_gig_specialty_by_id(

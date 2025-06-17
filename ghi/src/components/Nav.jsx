@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { useGetMuleQuery, useSignoutMutation } from '../app/apiSlice';
+import { useGetPackerQuery, useSignoutMutation } from '../app/apiSlice';
 
 const Nav = () => {
-    const { data: mule, isLoading } = useGetMuleQuery()
-    const [signout, signoutStatus] = useSignoutMutation()
+    const { data: packer, isLoading } = useGetPackerQuery()
+    const [signout] = useSignoutMutation()
 
 
     if (isLoading) return <div>Loading Navbar...</div>
@@ -25,27 +25,27 @@ const Nav = () => {
                 <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                     <NavLink to={'/'}>Marketplace</NavLink>
                 </li>
-                {mule && (
+                {packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={'mule/gigs/booked'}>Your Gigs</NavLink>
+                        <NavLink to={'packer/gigs/booked'}>Your Gigs</NavLink>
                     </li>
                 )}
-                {mule && (
+                {packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={`/mule/${mule.id}`}>Profile</NavLink>
+                        <NavLink to={`/packer/${packer.id}`}>Profile</NavLink>
                     </li>
                 )}
-                {!mule && (
+                {!packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                         <NavLink to={'/signup'}>Signup</NavLink>
                     </li>
                 )}
-                {!mule && (
+                {!packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                         <NavLink to={'/signin'}>Login</NavLink>
                     </li>
                 )}
-                {mule && (
+                {packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 text-orange-400 hover:text-orange-600 pl-4">
                         <NavLink
                             onClick={() => {

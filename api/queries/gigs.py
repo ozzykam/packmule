@@ -2,7 +2,7 @@ import psycopg
 from fastapi import HTTPException
 from typing import List, Optional
 from models.gigs import GigIn, GigInWithStatus, GigOut
-from models.users import GigsForMules, GigsForMulesUpdateIn
+from models.users import GigsForPackers, GigsForPackersUpdateIn
 from utils.exceptions import UserDatabaseException
 from queries.pool import pool
 from psycopg.types.json import Json
@@ -189,51 +189,51 @@ class GigQueries:
             created_on_date=record[9],
         )
 
-    def add_gig_to_mule(self, gig_id: int, mule_id: int) -> GigsForMules:
+    def add_gig_to_packer(self, gig_id: int, packer_id: int) -> GigsForPackers:
         try:
             with pool.connection() as conn:
                 with conn.cursor(
-                    row_factory=class_row(GigsForMules)
-                ) as gfm_db:
-                    gfm_db.execute(
+                    row_factory=class_row(GigsForPackers)
+                ) as gfp_db:
+                    gfp_db.execute(
                         """
-                        INSERT INTO gigs_for_mules (
+                        INSERT INTO gigs_for_packers (
                             gig_id,
-                            mule_id
+                            packer_id
                         )
                         VALUES (%s, %s)
-                        RETURNING id, gig_id, mule_id, gig_status_id
+                        RETURNING id, gig_id, packer_id, gig_status_id
                         """,
-                        (gig_id, mule_id),
+                        (gig_id, packer_id),
                     )
-                    gig_for_mule = gfm_db.fetchone()
-                    if not gig_for_mule:
+                    gig_for_packer = gfp_db.fetchone()
+                    if not gig_for_packer:
                         raise HTTPException(
-                            status_code=404, detail="could not add gig to mule"
+                            status_code=404, detail="could not add gig to packer"
                         )
-                    return gig_for_mule
+                    return gig_for_packer
         except Exception as e:
             print(e)
             raise HTTPException(
                 status_code=500, detail="database error - check for typos"
             )
 
-    def get_all_gigs_for_mules(self) -> List[GigsForMules]:
+    def get_all_gigs_for_packers(self) -> List[GigsForPackers]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as gig_db:
                     gig_db.execute(
                         """
                         SELECT *
-                        FROM gigs_for_mules
+                        FROM gigs_for_packers
                         ORDER BY id;
                         """
                     )
                     return [
-                        GigsForMules(
+                        GigsForPackers(
                             id=gig[0],
                             gig_id=gig[1],
-                            mule_id=gig[2],
+                            packer_id=gig[2],
                             gig_status_id=gig[3],
                         )
                         for gig in gig_db
@@ -244,59 +244,59 @@ class GigQueries:
                 status_code=500, detail="Could not retrieve list of Gigs"
             )
 
-    def get_gig_for_mule_by_id(
-        self, mule_id: int, gig_id: int
-    ) -> GigsForMules:
+    def get_gig_for_packer_by_id(
+        self, packer_id: int, gig_id: int
+    ) -> GigsForPackers:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as gfm_db:
-                    gfm_db.execute(
+                with conn.cursor() as gfp_db:
+                    gfp_db.execute(
                         """
                         SELECT *
-                        FROM gigs_for_mules
-                        WHERE gig_id = %s AND mule_id = %s
+                        FROM gigs_for_packers
+                        WHERE gig_id = %s AND packer_id = %s
                         """,
-                        (gig_id, mule_id),
+                        (gig_id, packer_id),
                     )
-                    record = gfm_db.fetchone()
+                    record = gfp_db.fetchone()
                     if not record:
                         return None
-                    return GigsForMules(
+                    return GigsForPackers(
                         id=record[0],
                         gig_id=record[1],
-                        mule_id=record[2],
+                        packer_id=record[2],
                         gig_status_id=record[3],
                     )
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=500, detail="Incorrect Gig or Mule ID provided"
+                status_code=500, detail="Incorrect Gig or Packer ID provided"
             )
 
-    def get_all_gigs_for_mule_by_id_for_status(
+    def get_all_gigs_for_packer_by_id_for_status(
             self,
-            mule_id: int
-    ) -> List[GigsForMules]:
+            packer_id: int
+    ) -> List[GigsForPackers]:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as gfm_db:
-                    gfm_db.execute(
+                with conn.cursor() as gfp_db:
+                    gfp_db.execute(
                         """
                         SELECT *
-                        FROM gigs_for_mules gfm
-                        JOIN gigs g ON g.id = gfm.gig_id
-                        WHERE gfm.mule_id = %s
+                        FROM gigs_for_packers gfp
+                        JOIN gigs g ON g.id = gfp.gig_id
+                        WHERE gfp.packer_id = %s
                         """,
-                        (mule_id,),
+                        (packer_id,),
                     )
-                    records = gfm_db.fetchall()
+                    records = gfp_db.fetchall()
                     if not records:
-                        return None
+                        return []
                     return [
-                        GigsForMules(
+                        GigsForPackers(
                             id=record[0],
                             gig_id=record[1],
-                            mule_id=record[2],
+                            packer_id=record[2],
                             gig_status_id=record[3]
                         )
                         for record in records
@@ -305,25 +305,25 @@ class GigQueries:
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=500, detail="Incorrect Gig or Mule ID provided"
+                status_code=500, detail="Incorrect Gig or Packer ID provided"
             )
 
-    def get_all_gigs_for_mule_by_id(self, mule_id: int) -> List[GigOut]:
+    def get_all_gigs_for_packer_by_id(self, packer_id: int) -> List[GigOut]:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as gfm_db:
-                    gfm_db.execute(
+                with conn.cursor() as gfp_db:
+                    gfp_db.execute(
                         """
                         SELECT *
                         FROM gigs g
-                        JOIN gigs_for_mules gfm ON g.id = gfm.gig_id
-                        WHERE gfm.mule_id = %s
+                        JOIN gigs_for_packers gfp ON g.id = gfp.gig_id
+                        WHERE gfp.packer_id = %s
                         """,
-                        (mule_id,),
+                        (packer_id,),
                     )
-                    records = gfm_db.fetchall()
+                    records = gfp_db.fetchall()
                     if not records:
-                        return None
+                        return []
                     return [
                         GigOut(
                             id=record[0],
@@ -343,25 +343,25 @@ class GigQueries:
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=500, detail="Incorrect Gig or Mule ID provided"
+                status_code=500, detail="Incorrect Gig or Packer ID provided"
             )
 
-    def get_booked_gigs_for_mule_by_id(self, mule_id: int) -> List[GigOut]:
+    def get_booked_gigs_for_packer_by_id(self, packer_id: int) -> List[GigOut]:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as gfm_db:
-                    gfm_db.execute(
+                with conn.cursor() as gfp_db:
+                    gfp_db.execute(
                         """
                         SELECT *
                         FROM gigs g
-                        JOIN gigs_for_mules gfm ON g.id = gfm.gig_id
-                        WHERE gfm.mule_id = %s AND gfm.gig_status_id = 2;
+                        JOIN gigs_for_packers gfp ON g.id = gfp.gig_id
+                        WHERE gfp.packer_id = %s AND gfp.gig_status_id = 2;
                         """,
-                        (mule_id,),
+                        (packer_id,),
                     )
-                    records = gfm_db.fetchall()
+                    records = gfp_db.fetchall()
                     if not records:
-                        return None
+                        return []
                     return [
                         GigOut(
                             id=record[0],
@@ -381,48 +381,48 @@ class GigQueries:
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=500, detail="Incorrect Gig or Mule ID provided"
+                status_code=500, detail="Incorrect Gig or Packer ID provided"
             )
 
-    def delete_mule_from_gig(self, mule_id: int, gig_id: int) -> bool:
+    def delete_packer_from_gig(self, packer_id: int, gig_id: int) -> bool:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as gig_for_mule_db:
-                    gig_for_mule_db.execute(
+                with conn.cursor() as gig_for_packer_db:
+                    gig_for_packer_db.execute(
                         """
-                        DELETE FROM gigs_for_mules
-                        WHERE mule_id = %s AND gig_id = %s
+                        DELETE FROM gigs_for_packers
+                        WHERE packer_id = %s AND gig_id = %s
                         """,
-                        (mule_id, gig_id),
+                        (packer_id, gig_id),
                     )
                     return True
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=401, detail="Could not remove Mule from Gig"
+                status_code=401, detail="Could not remove Packer from Gig"
             )
 
-    def update_gig_for_mule(
+    def update_gig_for_packer(
             self,
-            gig_for_mule_id: int,
-            edit_gig_for_mule: GigsForMulesUpdateIn
-    ) -> Optional[GigsForMules]:
-        print(edit_gig_for_mule)
+            gig_for_packer_id: int,
+            edit_gig_for_packer: GigsForPackersUpdateIn
+    ) -> Optional[GigsForPackers]:
+        print(edit_gig_for_packer)
         try:
             with pool.connection() as conn:
                 with conn.cursor(
-                    row_factory=class_row(GigsForMules)
+                    row_factory=class_row(GigsForPackers)
                 ) as cur:
                     cur.execute(
                         """
-                        UPDATE gigs_for_mules
+                        UPDATE gigs_for_packers
                         SET gig_status_id= %s
                         WHERE id = %s
                         RETURNING *;
                         """,
                         [
-                            edit_gig_for_mule.gig_status_id,
-                            gig_for_mule_id
+                            edit_gig_for_packer.gig_status_id,
+                            gig_for_packer_id
                         ]
                     )
                     gig = cur.fetchone()
@@ -432,24 +432,24 @@ class GigQueries:
         except psycopg.Error as e:
             print(e)
             raise UserDatabaseException(
-                "Error in updating Gig for Mule"
+                "Error in updating Gig for Packer"
             )
 
-    def get_gigs_for_mule_with_status(
+    def get_gigs_for_packer_with_status(
             self,
-            mule_id: int
+            packer_id: int
     ) -> List[GigInWithStatus]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as gig_db:
                     gig_db.execute(
                         """
-                        SELECT g.*, gm.gig_status_id, gm.mule_id
+                        SELECT g.*, gp.gig_status_id, gp.packer_id
                         FROM gigs g
-                        JOIN gigs_for_mules gm ON g.id = gm.gig_id
-                        WHERE gm.mule_id = %s
+                        JOIN gigs_for_packers gp ON g.id = gp.gig_id
+                        WHERE gp.packer_id = %s
                         """,
-                        [mule_id],
+                        [packer_id],
                     )
                     return [
                         GigInWithStatus(
@@ -464,7 +464,7 @@ class GigQueries:
                             dropoff_date=gig[8],
                             created_on_date=gig[9],
                             gig_status_id=gig[10],
-                            mule_id=gig[11],
+                            packer_id=gig[11],
                         )
                         for gig in gig_db
                     ]

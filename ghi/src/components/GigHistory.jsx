@@ -1,13 +1,13 @@
-import { useGetBookedGigsForMuleQuery, useGetMuleQuery, useUpdateGigForMuleMutation } from "../app/apiSlice"
+import { useGetBookedGigsForPackerQuery, useGetPackerQuery, useUpdateGigForPackerMutation } from "../app/apiSlice"
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom'
 import SignInForm from "./SignInForm"
 
 const GigHistory = () => {
-    const { data: bookedGigs, refetch } = useGetBookedGigsForMuleQuery()
-    const {data: mule, isLoading: isMuleLoading } = useGetMuleQuery()
+    const { data: bookedGigs, refetch } = useGetBookedGigsForPackerQuery()
+    const {data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
 
-    const [updateGigForMule] = useUpdateGigForMuleMutation();
+    const [updateGigForPacker] = useUpdateGigForPackerMutation();
     const navigate = useNavigate();
 
     const handleMarkAsComplete = async (gigId) => {
@@ -15,18 +15,18 @@ const GigHistory = () => {
             const data = {
                 gig_status_id: 3
             }
-            const updatedMule = mule.id
+            const updatedPacker = packer.id
             console.log(gigId)
-            await updateGigForMule({ gigId, body: data});
+            await updateGigForPacker({ gigId, body: data});
             refetch();
-            navigate(`/mule/${updatedMule}/gigs/pay`);
+            navigate(`/packer/${updatedPacker}/gigs/pay`);
         } catch (error) {
             console.error(error);
         }
     };
 
 
-    if (isMuleLoading) {
+    if (isPackerLoading) {
         return (
             <div>
                 Loading...
@@ -34,7 +34,7 @@ const GigHistory = () => {
         )
     }
     console.log(bookedGigs)
-    if (!mule) {
+    if (!packer) {
         return (
             <>
                 <div className="mx-auto w-1/2 p-4">

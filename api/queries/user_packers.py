@@ -1,5 +1,5 @@
 """
-Database Queries for Users as Mules
+Database Queries for Users as Packers
 """
 
 import os
@@ -19,7 +19,7 @@ if not DATABASE_URL:
 pool = ConnectionPool(DATABASE_URL)
 
 
-class MuleQueries:
+class PackerQueries:
     """
     Class containing queries for the Users table
 
@@ -29,11 +29,11 @@ class MuleQueries:
         # Here you can call any of the functions to query the DB
     """
 
-    def get_all_mules(self) -> List[UserDetails]:
+    def get_all_packers(self) -> List[UserDetails]:
         try:
             with pool.connection() as conn:
-                with conn.cursor() as mule_db:
-                    mule_db.execute(
+                with conn.cursor() as packer_db:
+                    packer_db.execute(
                         """
                         SELECT id, username, name, email, phone, bio
                         FROM users
@@ -43,20 +43,20 @@ class MuleQueries:
 
                     return [
                         UserDetails(
-                            id=mule[0],
-                            username=mule[1],
-                            name=mule[2],
-                            email=mule[3],
-                            phone=mule[4],
-                            bio=mule[5],
+                            id=packer[0],
+                            username=packer[1],
+                            name=packer[2],
+                            email=packer[3],
+                            phone=packer[4],
+                            bio=packer[5],
                         )
-                        for mule in mule_db
+                        for packer in packer_db
                     ]
 
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=500, detail="could not retrieve all muless"
+                status_code=500, detail="could not retrieve all packers"
             )
 
     def get_by_username(self, username: str) -> Optional[UserWithPw]:
@@ -111,7 +111,7 @@ class MuleQueries:
             raise UserDatabaseException(f"Error getting user with id {id}")
         return user
 
-    def create_mule(
+    def create_packer(
         self, new_user: UserRequest, hashed_password: str
     ) -> UserWithPw:
         """
@@ -156,7 +156,7 @@ class MuleQueries:
             )
         return user
 
-    def edit_mule_profile(
+    def edit_packer_profile(
         self, user_id: int, edit_user: UserDetails
     ) -> Optional[UserWithPw]:
         try:
