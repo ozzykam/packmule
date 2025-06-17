@@ -128,6 +128,32 @@ export const packmuleApi = createApi({
             }),
             invalidatesTags: ['PackerProfile'],
         }),
+
+        // CUSTOMER AUTH ROUTES
+        getCustomer: builder.query({
+            query: () => ({ url: '/api/customer/auth/authenticate' }),
+            providesTags: ['Customer'],
+        }),
+        customerSignout: builder.mutation({
+            query: () => ({ url: '/api/customer/auth/signout', method: 'DELETE' }),
+            invalidatesTags: ['Customer'],
+        }),
+        customerSignin: builder.mutation({
+            query: (body) => ({
+                url: '/api/customer/auth/signin',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Customer'],
+        }),
+        customerSignup: builder.mutation({
+            query: (body) => ({
+                url: '/api/customer/auth/signup',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Customer'],
+        }),
     }),
 })
 
@@ -153,4 +179,9 @@ export const {
     useGetBookedGigsForPackerQuery,
     useDeletePackerFromGigMutation,
     useGetGigsForPackerWithStatusQuery,
+    // Customer hooks
+    useGetCustomerQuery,
+    useCustomerSignoutMutation,
+    useCustomerSigninMutation,
+    useCustomerSignupMutation,
 } = packmuleApi

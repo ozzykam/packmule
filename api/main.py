@@ -4,7 +4,7 @@ Entry point for the FastAPI Application
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth_router, gigs, specialtys, users_packers
+from routers import auth_router, gigs, specialtys, users_packers, customer_auth
 import os
 
 app = FastAPI()
@@ -22,6 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router.router)
+app.include_router(customer_auth.router)
 app.include_router(gigs.router)
 app.include_router(specialtys.router)
 app.include_router(users_packers.router)
@@ -154,6 +155,53 @@ async def reset_gigs_table():
                 
     except Exception as e:
         return {"error": f"Reset failed: {str(e)}"}
+
+@app.get("/api/add-user-type")
+async def add_user_type():
+    """Directly add user_type column to users table"""
+    try:
+        import os
+        import psycopg
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                # Check if user_type column already exists
+                cur.execute("""
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'users' AND column_name = 'user_type'
+                    )
+                """)
+                column_exists = cur.fetchone()[0]
+                
+                if not column_exists:
+                    # Add user_type column with default value 'packer'
+                    cur.execute("""
+                        ALTER TABLE users 
+                        ADD COLUMN user_type VARCHAR(20) NOT NULL DEFAULT 'packer'
+                    """)
+                    
+                    # Create index for user_type
+                    cur.execute("""
+                        CREATE INDEX idx_users_user_type ON users(user_type)
+                    """)
+                    
+                    return {
+                        "message": "Successfully added user_type column",
+                        "column_added": True
+                    }
+                else:
+                    return {
+                        "message": "user_type column already exists",
+                        "column_added": False
+                    }
+                
+    except Exception as e:
+        return {"error": f"Adding user_type failed: {str(e)}"}
 
 @app.get("/api/check-gigs-table")
 async def check_gigs_table():

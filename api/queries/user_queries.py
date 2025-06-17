@@ -97,9 +97,10 @@ class UserQueries:
                             name,
                             email,
                             phone,
-                            bio
+                            bio,
+                            user_type
                         ) VALUES (
-                            %s, %s, %s, %s, %s, %s
+                            %s, %s, %s, %s, %s, %s, %s
                         )
                         RETURNING *;
                         """,
@@ -110,6 +111,7 @@ class UserQueries:
                             new_user.email,
                             new_user.phone,
                             new_user.bio,
+                            new_user.user_type,
                         ],
                     )
                     user = cur.fetchone()
@@ -137,7 +139,8 @@ class UserQueries:
                             name = %s,
                             email = %s,
                             phone = %s,
-                            bio = %s
+                            bio = %s,
+                            user_type = %s
                         WHERE id = %s
                         RETURNING *;
                         """,
@@ -147,6 +150,7 @@ class UserQueries:
                             edit_user.email,
                             edit_user.phone,
                             edit_user.bio,
+                            edit_user.user_type,
                             user_id,
                         ],
                     )

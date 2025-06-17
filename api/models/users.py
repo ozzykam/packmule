@@ -3,7 +3,10 @@ Pydantic Models for Users.
 """
 
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, Literal
+
+# User type options
+UserType = Literal["packer", "customer"]
 
 
 class UserDetails(BaseModel):
@@ -12,6 +15,7 @@ class UserDetails(BaseModel):
     email: EmailStr
     phone: str
     bio: Optional[str] = None
+    user_type: UserType
 
 
 class UserRequest(BaseModel):
@@ -25,6 +29,7 @@ class UserRequest(BaseModel):
     email: EmailStr
     phone: str
     bio: Optional[str] = None
+    user_type: UserType = "packer"  # Default to packer for backward compatibility
 
 
 class UserLogin(BaseModel):
@@ -51,6 +56,7 @@ class UserResponse(BaseModel):
     name: str
     email: EmailStr
     phone: str
+    user_type: UserType
 
 
 class UserWithPw(BaseModel):
@@ -65,6 +71,7 @@ class UserWithPw(BaseModel):
     email: EmailStr
     phone: str
     bio: Optional[str] = None
+    user_type: UserType
 
 
 class UserList(BaseModel):
@@ -80,3 +87,30 @@ class GigsForPackers(BaseModel):
 
 class GigsForPackersUpdateIn(BaseModel):
     gig_status_id: int
+
+
+# Customer-specific models
+class CustomerRequest(BaseModel):
+    """
+    Represents the parameters needed to create a new customer
+    """
+    username: str
+    password: str
+    name: str
+    email: EmailStr
+    phone: str
+    bio: Optional[str] = None
+    user_type: UserType = "customer"
+
+
+class CustomerResponse(BaseModel):
+    """
+    Represents a customer user response
+    """
+    id: int
+    username: str
+    name: str
+    email: EmailStr
+    phone: str
+    bio: Optional[str] = None
+    user_type: UserType

@@ -37,12 +37,22 @@ const Nav = () => {
                 )}
                 {!packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={'/signup'}>Signup</NavLink>
+                        <NavLink to={'/signup'}>Packer Signup</NavLink>
                     </li>
                 )}
                 {!packer && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={'/signin'}>Login</NavLink>
+                        <NavLink to={'/signin'}>Packer Login</NavLink>
+                    </li>
+                )}
+                {!packer && (
+                    <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-blue-400 hover:text-blue-600">
+                        <NavLink to={'/customer/signup'}>Customer Signup</NavLink>
+                    </li>
+                )}
+                {!packer && (
+                    <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-blue-400 hover:text-blue-600">
+                        <NavLink to={'/customer/signin'}>Customer Login</NavLink>
                     </li>
                 )}
                 {packer && (

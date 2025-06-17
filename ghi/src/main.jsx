@@ -4,6 +4,9 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import SignInForm from './components/SignInForm'
 import SignUpForm from './components/SignUpForm'
+import CustomerSignInForm from './components/CustomerSignInForm'
+import CustomerSignUpForm from './components/CustomerSignUpForm'
+import CustomerDashboard from './components/CustomerDashboard'
 import GigMarketplace from './components/GigMarketplace'
 import GigDetails from './components/GigDetails'
 import SpecialtyList from './components/SpecialtyList'
@@ -31,10 +34,25 @@ const router = createBrowserRouter(
             path: '/',
             element: <App />,
             children: [
+                // PACKER AUTH ROUTES
                 { path: 'signup', element: <SignUpForm /> },
                 { path: 'signin', element: <SignInForm /> },
 
-                // ✅ PROTECTED ROUTES BELOW:
+                // CUSTOMER AUTH ROUTES  
+                { path: 'customer/signup', element: <CustomerSignUpForm /> },
+                { path: 'customer/signin', element: <CustomerSignInForm /> },
+
+                // CUSTOMER PROTECTED ROUTES
+                {
+                    path: 'customer/dashboard',
+                    element: (
+                        <RequireAuth>
+                            <CustomerDashboard />
+                        </RequireAuth>
+                    ),
+                },
+
+                // ✅ PACKER PROTECTED ROUTES BELOW:
                 {
                     index: true,
                     element: (
