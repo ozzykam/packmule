@@ -34,7 +34,7 @@ const Nav = () => {
             <ul>
                 {userType === 'packer' && (
                 <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                    <NavLink to={'/'}>Marketplace</NavLink>
+                    <NavLink to={'/marketplace'}>Marketplace</NavLink>
                 </li>
                 )}
                 {userType === 'packer' && (

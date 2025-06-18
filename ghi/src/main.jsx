@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
+import HomePage from './components/HomePage'
 import SignInForm from './components/SignInForm'
 import SignUpForm from './components/SignUpForm'
 import CustomerSignInForm from './components/CustomerSignInForm'
@@ -46,17 +47,23 @@ const router = createBrowserRouter(
                 {
                     path: 'customer/dashboard',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="customer">
                             <CustomerDashboard />
                         </RequireAuth>
                     ),
                 },
 
-                // ✅ PACKER PROTECTED ROUTES BELOW:
+                // HOME PAGE (Default route)
                 {
                     index: true,
+                    element: <HomePage />
+                },
+
+                // ✅ PACKER PROTECTED ROUTES BELOW:
+                {
+                    path: 'marketplace',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <GigMarketplace />
                         </RequireAuth>
                     ),
@@ -64,7 +71,7 @@ const router = createBrowserRouter(
                 {
                     path: 'gig/:gigId',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <GigDetails />
                         </RequireAuth>
                     ),
@@ -72,7 +79,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/gigs/booked',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <GigHistory />
                         </RequireAuth>
                     ),
@@ -80,7 +87,7 @@ const router = createBrowserRouter(
                 {
                     path: 'specialtys',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <SpecialtyList />
                         </RequireAuth>
                     ),
@@ -88,7 +95,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/:packerId/specialtys',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <PackerSpecialtiesSelector />
                         </RequireAuth>
                     ),
@@ -96,7 +103,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/:packerId/specialtys/edit',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <PackerSpecialtiesEditor />
                         </RequireAuth>
                     ),
@@ -104,7 +111,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/:packerId',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <PackerProfile />
                         </RequireAuth>
                     ),
@@ -112,7 +119,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/edit',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <EditPackerProfile />
                         </RequireAuth>
                     ),
@@ -120,7 +127,7 @@ const router = createBrowserRouter(
                 {
                     path: 'packer/:packerId/gigs/pay',
                     element: (
-                        <RequireAuth>
+                        <RequireAuth userType="packer">
                             <PayHistory />
                         </RequireAuth>
                     ),

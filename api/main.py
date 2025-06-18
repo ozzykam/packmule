@@ -12,7 +12,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://packmule-650ce.web.app",
+        "https://packmulepro.com",
+        "https://packmule-650ce.web.app",  # Keep old domain for backup
         "http://localhost:5173",
         os.environ.get("CORS_HOST", "http://localhost:5173")
     ],

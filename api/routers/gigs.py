@@ -37,7 +37,7 @@ def create_a_gig(
     if user.user_type != "customer":
         raise HTTPException(status_code=403, detail="Only customers can create gigs")
     
-    # Override the customer_id with the authenticated user's ID
+    # Ensure customer_id is set to the authenticated user's ID
     gig.customer_id = user.id
     
     # Create the gig first

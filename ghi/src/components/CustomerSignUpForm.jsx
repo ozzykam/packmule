@@ -31,8 +31,11 @@ const CustomerSignUpForm = () => {
         try {
             const result = await customerSignup(form).unwrap()
             console.log('Customer signup successful:', result)
-            // Force navigation if useEffect doesn't trigger
-            navigate('/customer/dashboard')
+            
+            // Give auth state time to update before navigation
+            setTimeout(() => {
+                navigate('/customer/dashboard')
+            }, 100)
         } catch (err) {
             console.error('Customer signup error:', err)
         }

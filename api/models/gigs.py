@@ -21,7 +21,7 @@ class GigIn(BaseModel):
     dropoff_location: Location
     dropoff_date: datetime
     created_on_date: datetime
-    customer_id: int
+    customer_id: Optional[int] = None  # Allow None for existing gigs
     images: Optional[List[str]] = []  # List of image URLs/paths
     specialties: Optional[List[int]] = []  # List of specialty IDs
     featured_image_index: Optional[int] = None  # Index of featured image
