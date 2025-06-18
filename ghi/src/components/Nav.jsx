@@ -3,7 +3,7 @@ import { useSignoutMutation, useCustomerSignoutMutation } from '../app/apiSlice'
 import { useAuth } from '../hooks/useAuth';
 
 const Nav = () => {
-    const { isAuthenticated, userType, packer, customer, isLoading } = useAuth()
+    const { isAuthenticated, userType, packer, isLoading } = useAuth()
     const [signout] = useSignoutMutation()
     const [customerSignout] = useCustomerSignoutMutation()
 

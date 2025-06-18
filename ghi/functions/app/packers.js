@@ -64,7 +64,8 @@ module.exports = (db) => {
         }
     });
 
-    // GET /api/packer/:packerId/specialtys - Get specialties for specific packer
+    // GET /api/packer/:packerId/specialtys
+    // - Get specialties for specific packer
     router.get('/:packerId/specialtys', async (req, res) => {
         try {
             const snapshot = await db

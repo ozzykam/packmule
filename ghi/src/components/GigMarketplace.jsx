@@ -6,7 +6,7 @@ import GigListForPacker from "./GigListForPacker"
 import SignInForm from "./SignInForm"
 
 const GigMarketplace = () => {
-    const { isAuthenticated, isLoading, userType, packer, customer } = useAuth()
+    const { isAuthenticated, isLoading, userType } = useAuth()
     const navigate = useNavigate()
 
     useEffect(() => {

@@ -16,6 +16,11 @@ const GigList = () => {
         return <div>Loading Gigs...</div>;
     }
 
+    // Add safety checks for undefined data
+    if (!gigList || !gigDetailList) {
+        return <div>Unable to load gigs. Please try again later.</div>;
+    }
+
     const bookedGigs = gigList.map(gig => gig.gig_id)
     const openGigs = gigDetailList.filter( gig => !bookedGigs.includes(gig.id))
 
