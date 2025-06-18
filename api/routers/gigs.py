@@ -61,14 +61,52 @@ def create_a_gig(
 
 
 @router.delete("/api/gigs/{gig_id}", response_model=DeleteGig)
-def delete_gig(gig_id: int, queries: GigQueries = Depends()):
+def delete_gig(
+    gig_id: int, 
+    queries: GigQueries = Depends(),
+    user: UserResponse = Depends(try_get_jwt_user_data)
+):
+    if user is None:
+        raise user_exception
+    if user.user_type != "customer":
+        raise HTTPException(status_code=403, detail="Only customers can delete gigs")
+    
+    # Get the existing gig to check ownership
+    existing_gig = queries.get_gig_by_id(gig_id)
+    if not existing_gig:
+        raise HTTPException(status_code=404, detail="Gig not found")
+    
+    # Verify the customer owns this gig
+    if existing_gig.customer_id != user.id:
+        raise HTTPException(status_code=403, detail="You can only delete your own gigs")
+    
     return {"success": queries.delete(gig_id=gig_id)}
 
 
 @router.put("/api/gigs/{gig_id}", response_model=GigOut)
 def update_gig(
-    gig_id: int, gig: GigIn, queries: GigQueries = Depends()
+    gig_id: int, 
+    gig: GigIn, 
+    queries: GigQueries = Depends(),
+    user: UserResponse = Depends(try_get_jwt_user_data)
 ) -> GigOut:
+    if user is None:
+        raise user_exception
+    if user.user_type != "customer":
+        raise HTTPException(status_code=403, detail="Only customers can update gigs")
+    
+    # Get the existing gig to check ownership
+    existing_gig = queries.get_gig_by_id(gig_id)
+    if not existing_gig:
+        raise HTTPException(status_code=404, detail="Gig not found")
+    
+    # Verify the customer owns this gig
+    if existing_gig.customer_id != user.id:
+        raise HTTPException(status_code=403, detail="You can only update your own gigs")
+    
+    # Ensure customer_id is set to the authenticated user's ID (prevent tampering)
+    gig.customer_id = user.id
+    
     return queries.update_gig(gig_id, gig)
 
 

@@ -1,11 +1,15 @@
 import { useState } from 'react'
-import { useGetCustomerQuery, useGetAllGigsQuery } from '../app/apiSlice'
+import { useGetCustomerQuery, useGetAllGigsQuery, useDeleteGigMutation } from '../app/apiSlice'
 import CreateGigForm from './CreateGigForm'
+import EditGigForm from './EditGigForm'
 
 const CustomerDashboard = () => {
     const { data: customer, isLoading: customerLoading } = useGetCustomerQuery()
     const { data: allGigs, isLoading: gigsLoading, refetch: refetchGigs } = useGetAllGigsQuery()
+    const [deleteGig, deleteGigStatus] = useDeleteGigMutation()
     const [showCreateForm, setShowCreateForm] = useState(false)
+    const [editingGig, setEditingGig] = useState(null)
+    const [deletingGigId, setDeletingGigId] = useState(null)
 
     // Filter gigs to show only those created by this customer
     const customerGigs = allGigs?.filter(gig => gig.customer_id === customer?.id) || []
@@ -14,6 +18,26 @@ const CustomerDashboard = () => {
 
     const handleGigCreated = () => {
         refetchGigs()
+    }
+
+    const handleGigUpdated = () => {
+        refetchGigs()
+        setEditingGig(null)
+    }
+
+    const handleDeleteGig = async (gigId) => {
+        if (window.confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
+            try {
+                setDeletingGigId(gigId)
+                await deleteGig(gigId).unwrap()
+                refetchGigs()
+            } catch (err) {
+                console.error('Delete gig error:', err)
+                alert('Failed to delete job. Please try again.')
+            } finally {
+                setDeletingGigId(null)
+            }
+        }
     }
 
     return (
@@ -112,15 +136,29 @@ const CustomerDashboard = () => {
                                         <span className="text-2xl font-bold text-blue-600">
                                             ${gig.price}
                                         </span>
-                                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                                            View Details
-                                        </button>
                                     </div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-gray-500 mb-3">
                                         {gig.boxes} boxes • {new Date(gig.pickup_date).toLocaleDateString()}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-1">
+                                    <div className="text-xs text-gray-500 mb-4">
                                         Posted {new Date(gig.created_on_date).toLocaleDateString()}
+                                    </div>
+                                    
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2">
+                                        <button 
+                                            onClick={() => setEditingGig(gig)}
+                                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            onClick={() => handleDeleteGig(gig.id)}
+                                            disabled={deletingGigId === gig.id}
+                                            className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
+                                        >
+                                            {deletingGigId === gig.id ? 'Deleting...' : 'Delete'}
+                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -183,6 +221,15 @@ const CustomerDashboard = () => {
                 <CreateGigForm
                     onClose={() => setShowCreateForm(false)}
                     onSuccess={handleGigCreated}
+                />
+            )}
+
+            {/* Edit Gig Form Modal */}
+            {editingGig && (
+                <EditGigForm
+                    gig={editingGig}
+                    onClose={() => setEditingGig(null)}
+                    onSuccess={handleGigUpdated}
                 />
             )}
         </div>
