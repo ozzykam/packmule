@@ -27,7 +27,18 @@ def get_gig_by_id(gig_id: int, queries: GigQueries = Depends()) -> GigOut:
 
 
 @router.post("/api/gigs", response_model=GigOut)
-def create_a_gig(gig: GigIn, queries: GigQueries = Depends()):
+def create_a_gig(
+    gig: GigIn, 
+    queries: GigQueries = Depends(),
+    user: UserResponse = Depends(try_get_jwt_user_data)
+):
+    if user is None:
+        raise user_exception
+    if user.user_type != "customer":
+        raise HTTPException(status_code=403, detail="Only customers can create gigs")
+    
+    # Override the customer_id with the authenticated user's ID
+    gig.customer_id = user.id
     return queries.create_gig(gig)
 
 

@@ -38,6 +38,7 @@ class GigQueries:
                             dropoff_location=gig[7],
                             dropoff_date=gig[8],
                             created_on_date=gig[9],
+                            customer_id=gig[10] if len(gig) > 10 else None,
                         )
                         for gig in gig_db
                     ]
@@ -68,10 +69,11 @@ class GigQueries:
                                 pickup_date,
                                 dropoff_location,
                                 dropoff_date,
-                                created_on_date
+                                created_on_date,
+                                customer_id
                             )
                         VALUES
-                            (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         RETURNING id;
                         """,
                     [
@@ -84,6 +86,7 @@ class GigQueries:
                         dropoff_location,
                         gig.dropoff_date,
                         gig.created_on_date,
+                        gig.customer_id,
                     ],
                 )
                 id = result.fetchone()[0]
@@ -187,6 +190,7 @@ class GigQueries:
             dropoff_location=record[7],
             dropoff_date=record[8],
             created_on_date=record[9],
+            customer_id=record[10] if len(record) > 10 else None,
         )
 
     def add_gig_to_packer(self, gig_id: int, packer_id: int) -> GigsForPackers:

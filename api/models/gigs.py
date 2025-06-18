@@ -21,6 +21,7 @@ class GigIn(BaseModel):
     dropoff_location: Location
     dropoff_date: datetime
     created_on_date: datetime
+    customer_id: int
 
 
 class GigOut(GigIn):

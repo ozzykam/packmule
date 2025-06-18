@@ -203,6 +203,54 @@ async def add_user_type():
     except Exception as e:
         return {"error": f"Adding user_type failed: {str(e)}"}
 
+
+@app.get("/api/add-customer-id-to-gigs")
+async def add_customer_id_to_gigs():
+    """Add customer_id column to gigs table"""
+    try:
+        import os
+        import psycopg
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                # Check if customer_id column already exists
+                cur.execute("""
+                    SELECT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'gigs' AND column_name = 'customer_id'
+                    )
+                """)
+                column_exists = cur.fetchone()[0]
+                
+                if not column_exists:
+                    # Add customer_id column as foreign key to users table
+                    cur.execute("""
+                        ALTER TABLE gigs 
+                        ADD COLUMN customer_id INTEGER REFERENCES users(id)
+                    """)
+                    
+                    # Create index for customer_id
+                    cur.execute("""
+                        CREATE INDEX idx_gigs_customer_id ON gigs(customer_id)
+                    """)
+                    
+                    return {
+                        "message": "Successfully added customer_id column to gigs table",
+                        "column_added": True
+                    }
+                else:
+                    return {
+                        "message": "customer_id column already exists in gigs table",
+                        "column_added": False
+                    }
+                
+    except Exception as e:
+        return {"error": f"Adding customer_id to gigs failed: {str(e)}"}
+
 @app.get("/api/check-gigs-table")
 async def check_gigs_table():
     """Check the contents of gigs_for_packers table"""
