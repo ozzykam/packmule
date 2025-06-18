@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class Location(BaseModel):
@@ -22,6 +22,9 @@ class GigIn(BaseModel):
     dropoff_date: datetime
     created_on_date: datetime
     customer_id: int
+    images: Optional[List[str]] = []  # List of image URLs/paths
+    specialties: Optional[List[int]] = []  # List of specialty IDs
+    featured_image_index: Optional[int] = None  # Index of featured image
 
 
 class GigOut(GigIn):

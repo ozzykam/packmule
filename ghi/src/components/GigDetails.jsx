@@ -8,6 +8,8 @@ import {
     useAddGigtoPackerMutation,
     useDeletePackerFromGigMutation,
 } from '../app/apiSlice'
+import ImageCarousel from './ImageCarousel'
+import ImageStack from './ImageStack'
 
 const GigDetails = () => {
     const params = useParams()
@@ -16,6 +18,8 @@ const GigDetails = () => {
     const { data: gigs_for_packers_data, refetch: refectchUseGetGigsForPackers } = useGetGigsForPackersListQuery(params.gigId)
     const { data: specialtys_data, isLoading: isSpecialtyLoading } = useListGigSpecialtiesForGigByGigIdQuery(params.gigId)
     const [ isBooked, setIsBooked ] = useState(false)
+    const [ showCarousel, setShowCarousel ] = useState(false)
+    const [ carouselStartIndex, setCarouselStartIndex ] = useState(0)
     const [ bookGig ] = useAddGigtoPackerMutation()
     const [ cancelGig ] = useDeletePackerFromGigMutation()
 
@@ -58,47 +62,64 @@ const GigDetails = () => {
         setIsBooked(false)
         refectchUseGetGigsForPackers()
     }
-    console.log(params.gigId)
+
+    const handleImageClick = (index) => {
+        setCarouselStartIndex(index)
+        setShowCarousel(true)
+    }
+
+    const handleViewMoreImages = () => {
+        setCarouselStartIndex(0)
+        setShowCarousel(true)
+    }
+
+    // Get images and featured image info
+    const images = gig_data?.images || []
+    const featuredIndex = gig_data?.featured_image_index ?? 0
+    const featuredImage = images.length > 0 ? images[featuredIndex] : null
 
     return (
         <>
-            <div className="flex justify-center outline-gray-100">
-                <div className="bg-white rounded w-3/4 px-10 pb-8 m-9">
+            <div className="max-w-6xl mx-auto px-4 py-8">
+                {/* Featured Image Banner */}
+                <div className="relative mb-8">
+                    {featuredImage ? (
+                        <div 
+                            className="w-full h-80 rounded-lg overflow-hidden cursor-pointer shadow-lg"
+                            onClick={() => handleImageClick(featuredIndex)}
+                        >
+                            <img
+                                src={featuredImage}
+                                alt={gig_data.title}
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                            />
+                        </div>
+                    ) : (
+                        <div className="w-full h-80 rounded-lg bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center shadow-lg">
+                            <div className="text-center text-white">
+                                <div className="text-6xl mb-4">📦</div>
+                                <h2 className="text-2xl font-semibold">Moving Job</h2>
+                                <p className="text-orange-100">No photos provided</p>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Image Stack for additional photos */}
+                    {images.length > 1 && (
+                        <div className="absolute bottom-4 right-4">
+                            <ImageStack
+                                images={images}
+                                featuredIndex={featuredIndex}
+                                onViewMore={handleViewMoreImages}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* Main Content */}
+                <div className="bg-white rounded-lg shadow-lg p-8">
                     <div>
-                        <h1 className="pl-0 pb-2">{gig_data.title}</h1>
-                    </div>
-                    <div className="flex justify-start outline-gray-100 w-full">
-                        <div className="bg-white rounded w-1/2 mr-2 my-9">
-                            <img
-                                src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                                alt="Gig"
-                                className="h-full rounded-l-lg"
-                            />
-                        </div>
-                        <div className="span bg-white rounded w-1/4 my-9 mr-2">
-                            <img
-                                src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                                alt="Gig"
-                                className="w-full mr-2 mb-2"
-                            />
-                            <img
-                                src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                                alt="Gig"
-                                className="w-full"
-                            />
-                        </div>
-                        <div className="span bg-white rounded w-1/4 my-9">
-                            <img
-                                src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                                alt="Gig"
-                                className="w-full mr-2 mb-2 rounded-tr-lg"
-                            />
-                            <img
-                                src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                                alt="Gig"
-                                className="w-full rounded-br-lg"
-                            />
-                        </div>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-6">{gig_data.title}</h1>
                     </div>
 
 
@@ -246,6 +267,15 @@ const GigDetails = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Image Carousel Modal */}
+            {showCarousel && (
+                <ImageCarousel
+                    images={images}
+                    initialIndex={carouselStartIndex}
+                    onClose={() => setShowCarousel(false)}
+                />
+            )}
         </>
     )
 }

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from queries.gigs import GigQueries
 from models.gigs import GigInWithStatus, GigOut, GigIn, DeleteGig
@@ -6,7 +6,6 @@ from models.specialtys import GigSpecialtyIn, GigSpecialtyOut
 from queries.specialtys import SpecialtyQueries
 from models.users import UserResponse
 from utils.authentication import try_get_jwt_user_data
-from fastapi import HTTPException
 
 router = APIRouter(tags=["Gigs"])
 
@@ -30,6 +29,7 @@ def get_gig_by_id(gig_id: int, queries: GigQueries = Depends()) -> GigOut:
 def create_a_gig(
     gig: GigIn, 
     queries: GigQueries = Depends(),
+    specialty_queries: SpecialtyQueries = Depends(),
     user: UserResponse = Depends(try_get_jwt_user_data)
 ):
     if user is None:
@@ -39,7 +39,25 @@ def create_a_gig(
     
     # Override the customer_id with the authenticated user's ID
     gig.customer_id = user.id
-    return queries.create_gig(gig)
+    
+    # Create the gig first
+    created_gig = queries.create_gig(gig)
+    
+    # Add specialties to the gig if any were selected
+    if gig.specialties:
+        for specialty_id in gig.specialties:
+            try:
+                specialty_queries.create_gig_specialty(
+                    gig_id=created_gig.id,
+                    specialty_id=specialty_id,
+                    specialty_name="",  # Will be filled by the query
+                    specialty_type_id=0  # Will be filled by the query
+                )
+            except Exception as e:
+                # Continue if specialty fails, don't break gig creation
+                print(f"Failed to add specialty {specialty_id} to gig {created_gig.id}: {e}")
+    
+    return created_gig
 
 
 @router.delete("/api/gigs/{gig_id}", response_model=DeleteGig)

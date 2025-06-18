@@ -251,6 +251,43 @@ async def add_customer_id_to_gigs():
     except Exception as e:
         return {"error": f"Adding customer_id to gigs failed: {str(e)}"}
 
+
+@app.get("/api/add-gig-images-table")
+async def add_gig_images_table():
+    """Create gig_images table for storing gig images"""
+    try:
+        import os
+        import psycopg
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                # Create gig_images table
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS gig_images (
+                        id SERIAL PRIMARY KEY,
+                        gig_id INTEGER REFERENCES gigs(id) ON DELETE CASCADE,
+                        image_url VARCHAR(500) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                
+                # Create index for gig_id
+                cur.execute("""
+                    CREATE INDEX IF NOT EXISTS idx_gig_images_gig_id ON gig_images(gig_id)
+                """)
+                
+                return {
+                    "message": "Successfully created gig_images table",
+                    "table_created": True
+                }
+                
+    except Exception as e:
+        return {"error": f"Creating gig_images table failed: {str(e)}"}
+
 @app.get("/api/check-gigs-table")
 async def check_gigs_table():
     """Check the contents of gigs_for_packers table"""

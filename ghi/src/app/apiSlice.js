@@ -42,6 +42,15 @@ export const packmuleApi = createApi({
         // GIG ROUTES
         getAllGigs: builder.query({
             query: () => ({ url: '/api/gigs' }),
+            providesTags: ['Gigs'],
+        }),
+        createGig: builder.mutation({
+            query: (body) => ({
+                url: '/api/gigs',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Gigs'],
         }),
         getGigDetails: builder.query({
             query: (gigId) => ({ url: `/api/gig/${gigId}` }),
@@ -160,6 +169,7 @@ export const packmuleApi = createApi({
 export const {
     useUpdateGigMutation,
     useGetAllGigsQuery,
+    useCreateGigMutation,
     useGetGigDetailsQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
     useGetPackerQuery,
