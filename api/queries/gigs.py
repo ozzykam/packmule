@@ -39,6 +39,9 @@ class GigQueries:
                             dropoff_date=gig[8],
                             created_on_date=gig[9],
                             customer_id=gig[10] if len(gig) > 10 else None,
+                            images=gig[11] if len(gig) > 11 else [],
+                            specialties=gig[12] if len(gig) > 12 else [],
+                            featured_image_index=gig[13] if len(gig) > 13 else None,
                         )
                         for gig in gig_db
                     ]
@@ -119,6 +122,8 @@ class GigQueries:
                 with conn.cursor() as gig_db:
                     pickup_location = Json(gig.pickup_location.model_dump())
                     dropoff_location = Json(gig.dropoff_location.model_dump())
+                    images = Json(gig.images) if gig.images else Json([])
+                    specialties = Json(gig.specialties) if gig.specialties else Json([])
 
                     gig_db.execute(
                         """
@@ -131,7 +136,10 @@ class GigQueries:
                             , pickup_date = %s
                             , dropoff_location = %s
                             , dropoff_date = %s
-                            , created_on_date = %s
+                            , customer_id = %s
+                            , images = %s
+                            , specialties = %s
+                            , featured_image_index = %s
                         WHERE id = %s
                         """,
                         [
@@ -143,7 +151,10 @@ class GigQueries:
                             gig.pickup_date,
                             dropoff_location,
                             gig.dropoff_date,
-                            gig.created_on_date,
+                            gig.customer_id,
+                            images,
+                            specialties,
+                            gig.featured_image_index,
                             gig_id,
                         ],
                     )
@@ -191,6 +202,9 @@ class GigQueries:
             dropoff_date=record[8],
             created_on_date=record[9],
             customer_id=record[10] if len(record) > 10 else None,
+            images=record[11] if len(record) > 11 else [],
+            specialties=record[12] if len(record) > 12 else [],
+            featured_image_index=record[13] if len(record) > 13 else None,
         )
 
     def add_gig_to_packer(self, gig_id: int, packer_id: int) -> GigsForPackers:

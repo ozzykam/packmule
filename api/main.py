@@ -412,6 +412,36 @@ async def debug_booking(
     except Exception as e:
         return {"error": f"Debug failed: {str(e)}"}
 
+@app.get("/api/check-gigs-table-structure")
+async def check_gigs_table_structure():
+    """Check the structure of the gigs table"""
+    try:
+        import os
+        import psycopg
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                # Check table structure
+                cur.execute("""
+                    SELECT column_name, data_type, is_nullable 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'gigs'
+                    ORDER BY ordinal_position
+                """)
+                columns = cur.fetchall()
+                
+                return {
+                    "table": "gigs",
+                    "columns": [{"name": col[0], "type": col[1], "nullable": col[2]} for col in columns]
+                }
+                
+    except Exception as e:
+        return {"error": f"Check failed: {str(e)}"}
+
 @app.get("/api/reset-all-gig-tables")
 async def reset_all_gig_tables():
     """Drop all gig-related tables and recreate fresh gigs_for_packers table"""
