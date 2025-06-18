@@ -29,7 +29,10 @@ const CustomerSignUpForm = () => {
     async function handleFormSubmit(e) {
         e.preventDefault()
         try {
-            await customerSignup(form).unwrap()
+            const result = await customerSignup(form).unwrap()
+            console.log('Customer signup successful:', result)
+            // Force navigation if useEffect doesn't trigger
+            navigate('/customer/dashboard')
         } catch (err) {
             console.error('Customer signup error:', err)
         }

@@ -25,7 +25,10 @@ const CustomerSignInForm = () => {
     async function handleFormSubmit(e) {
         e.preventDefault()
         try {
-            await customerSignin(form).unwrap()
+            const result = await customerSignin(form).unwrap()
+            console.log('Customer signin successful:', result)
+            // Force navigation if useEffect doesn't trigger
+            navigate('/customer/dashboard')
         } catch (err) {
             console.error('Customer signin error:', err)
         }
@@ -90,7 +93,7 @@ const CustomerSignInForm = () => {
 
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
-                        Don't have an account? 
+                        Don&apos;t have an account? 
                         <button
                             type="button"
                             onClick={() => navigate('/customer/signup')}

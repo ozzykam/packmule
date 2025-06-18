@@ -1,9 +1,19 @@
 import { NavLink } from 'react-router-dom';
-import { useGetPackerQuery, useSignoutMutation } from '../app/apiSlice';
+import { useSignoutMutation, useCustomerSignoutMutation } from '../app/apiSlice';
+import { useAuth } from '../hooks/useAuth';
 
 const Nav = () => {
-    const { data: packer, isLoading } = useGetPackerQuery()
+    const { isAuthenticated, userType, packer, customer, isLoading } = useAuth()
     const [signout] = useSignoutMutation()
+    const [customerSignout] = useCustomerSignoutMutation()
+
+    const handleSignout = () => {
+        if (userType === 'customer') {
+            customerSignout()
+        } else {
+            signout()
+        }
+    }
 
 
     if (isLoading) return <div>Loading Navbar...</div>
@@ -22,45 +32,40 @@ const Nav = () => {
                 </span>
             </div>
             <ul>
+                {userType === 'packer' && (
                 <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                     <NavLink to={'/'}>Marketplace</NavLink>
                 </li>
-                {packer && (
+                )}
+                {userType === 'packer' && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                         <NavLink to={'packer/gigs/booked'}>Your Gigs</NavLink>
                     </li>
                 )}
-                {packer && (
+                {userType === 'packer' && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                         <NavLink to={`/packer/${packer.id}`}>Profile</NavLink>
                     </li>
                 )}
-                {!packer && (
-                    <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={'/signup'}>Packer Signup</NavLink>
+                {userType === 'customer' && (
+                    <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-blue-400 hover:text-blue-600">
+                        <NavLink to={'/customer/dashboard'}>Dashboard</NavLink>
                     </li>
                 )}
-                {!packer && (
+                {!isAuthenticated && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
                         <NavLink to={'/signin'}>Packer Login</NavLink>
                     </li>
                 )}
-                {!packer && (
-                    <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-blue-400 hover:text-blue-600">
-                        <NavLink to={'/customer/signup'}>Customer Signup</NavLink>
-                    </li>
-                )}
-                {!packer && (
+                {!isAuthenticated && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-blue-400 hover:text-blue-600">
                         <NavLink to={'/customer/signin'}>Customer Login</NavLink>
                     </li>
                 )}
-                {packer && (
+                {isAuthenticated && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 text-orange-400 hover:text-orange-600 pl-4">
                         <NavLink
-                            onClick={() => {
-                                signout()
-                            }}
+                            onClick={handleSignout}
                         >
                             Sign Out
                         </NavLink>
