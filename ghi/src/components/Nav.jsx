@@ -1,17 +1,26 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSignoutMutation, useCustomerSignoutMutation } from '../app/apiSlice';
 import { useAuth } from '../hooks/useAuth';
 
 const Nav = () => {
+    const navigate = useNavigate()
     const { isAuthenticated, userType, packer, isLoading } = useAuth()
     const [signout] = useSignoutMutation()
     const [customerSignout] = useCustomerSignoutMutation()
 
-    const handleSignout = () => {
-        if (userType === 'customer') {
-            customerSignout()
-        } else {
-            signout()
+    const handleSignout = async () => {
+        try {
+            if (userType === 'customer') {
+                await customerSignout().unwrap()
+            } else {
+                await signout().unwrap()
+            }
+            // Redirect to home page after successful signout
+            navigate('/')
+        } catch (error) {
+            console.error('Signout error:', error)
+            // Still redirect to home page even if signout fails
+            navigate('/')
         }
     }
 
@@ -54,7 +63,7 @@ const Nav = () => {
                 )}
                 {!isAuthenticated && (
                     <li className="block mt-4 lg:inline-block lg:mt-0 font-semibold text-orange-400 hover:text-orange-600">
-                        <NavLink to={'/signin'}>Packer Login</NavLink>
+                        <NavLink to={'/packer/signin'}>Packer Login</NavLink>
                     </li>
                 )}
                 {!isAuthenticated && (

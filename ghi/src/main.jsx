@@ -36,8 +36,8 @@ const router = createBrowserRouter(
             element: <App />,
             children: [
                 // PACKER AUTH ROUTES
-                { path: 'signup', element: <SignUpForm /> },
-                { path: 'signin', element: <SignInForm /> },
+                { path: 'packer/signup', element: <SignUpForm /> },
+                { path: 'packer/signin', element: <SignInForm /> },
 
                 // CUSTOMER AUTH ROUTES  
                 { path: 'customer/signup', element: <CustomerSignUpForm /> },

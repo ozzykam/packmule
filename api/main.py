@@ -412,6 +412,38 @@ async def debug_booking(
     except Exception as e:
         return {"error": f"Debug failed: {str(e)}"}
 
+@app.get("/api/reset-migration-from")
+async def reset_migration_from(from_migration: str = "010_rename_mules_to_packers"):
+    """Reset migrations from a specific point to allow re-running"""
+    try:
+        import os
+        import psycopg
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                # Delete migration records from the specified migration onwards
+                cur.execute("""
+                    DELETE FROM migrations 
+                    WHERE name >= %s
+                """, [from_migration])
+                
+                # Check what's left
+                cur.execute("SELECT name FROM migrations ORDER BY name")
+                remaining_migrations = [row[0] for row in cur.fetchall()]
+                
+                return {
+                    "message": f"Reset migrations from {from_migration}",
+                    "remaining_migrations": remaining_migrations,
+                    "next_step": "Now run /api/run-migrations to apply remaining migrations"
+                }
+                
+    except Exception as e:
+        return {"error": f"Failed to reset migrations: {str(e)}"}
+
 @app.get("/api/fix-migration-history")
 async def fix_migration_history():
     """Fix migration history mismatch by recalculating hashes"""

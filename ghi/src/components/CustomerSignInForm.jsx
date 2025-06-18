@@ -106,7 +106,7 @@ const CustomerSignInForm = () => {
                         Are you a mover? 
                         <button
                             type="button"
-                            onClick={() => navigate('/signin')}
+                            onClick={() => navigate('/packer/signin')}
                             className="text-orange-500 hover:text-orange-700 font-semibold ml-1"
                         >
                             Packer Sign In

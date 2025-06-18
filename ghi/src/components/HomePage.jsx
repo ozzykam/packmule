@@ -123,7 +123,7 @@ const HomePage = () => {
                                 </li>
                             </ul>
                             <button
-                                onClick={() => navigate('/signin')}
+                                onClick={() => navigate('/packer/signin')}
                                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors mb-3"
                             >
                                 Packer Sign In
@@ -131,7 +131,7 @@ const HomePage = () => {
                             <p className="text-center text-sm text-gray-500">
                                 Don't have an account?{' '}
                                 <button
-                                    onClick={() => navigate('/signup')}
+                                    onClick={() => navigate('/packer/signup')}
                                     className="text-orange-500 hover:text-orange-700 font-medium"
                                 >
                                     Join as a Packer today!

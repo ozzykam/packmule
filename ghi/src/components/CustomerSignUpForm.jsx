@@ -117,7 +117,7 @@ const CustomerSignUpForm = () => {
                         Are you a mover? 
                         <button
                             type="button"
-                            onClick={() => navigate('/signup')}
+                            onClick={() => navigate('/packer/signup')}
                             className="text-orange-500 hover:text-orange-700 font-semibold ml-1"
                         >
                             Join as a Packer
