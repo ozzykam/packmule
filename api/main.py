@@ -412,6 +412,63 @@ async def debug_booking(
     except Exception as e:
         return {"error": f"Debug failed: {str(e)}"}
 
+@app.get("/api/fix-migration-history")
+async def fix_migration_history():
+    """Fix migration history mismatch by recalculating hashes"""
+    try:
+        import os
+        import psycopg
+        import hashlib
+        from pathlib import Path
+        
+        db_url = os.environ.get("DATABASE_PUBLIC_URL") or os.environ.get("DATABASE_URL")
+        if not db_url:
+            return {"error": "No database URL found"}
+        
+        # Read the current migration file and calculate its hash
+        migration_dir = Path(__file__).parent / "migrations"
+        files = sorted([
+            file for file in migration_dir.iterdir()
+            if not str(file.name).startswith("__") and file.suffix == ".py"
+        ])
+        
+        hash_obj = hashlib.sha256()
+        migration_hashes = {}
+        
+        for file in files:
+            # Import and read the migration
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(file.stem, file)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            
+            # Update hash
+            hash_obj.update(bytes(str(module.steps), encoding="utf8"))
+            migration_hashes[file.stem] = hash_obj.digest()
+        
+        # Update the database with correct hashes
+        with psycopg.connect(db_url) as conn:
+            with conn.cursor() as cur:
+                for migration_name, correct_hash in migration_hashes.items():
+                    cur.execute("""
+                        UPDATE migrations 
+                        SET digest = %s 
+                        WHERE name = %s
+                    """, [correct_hash, migration_name])
+                
+                # Check what was updated
+                cur.execute("SELECT name FROM migrations ORDER BY name")
+                updated_migrations = [row[0] for row in cur.fetchall()]
+                
+                return {
+                    "message": "Migration history fixed",
+                    "updated_migrations": updated_migrations,
+                    "total_migrations": len(migration_hashes)
+                }
+                
+    except Exception as e:
+        return {"error": f"Failed to fix migration history: {str(e)}"}
+
 @app.get("/api/check-gigs-table-structure")
 async def check_gigs_table_structure():
     """Check the structure of the gigs table"""
