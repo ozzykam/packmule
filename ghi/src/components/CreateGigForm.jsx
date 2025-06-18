@@ -3,7 +3,7 @@ import { useCreateGigMutation, useGetAllSpecialtysQuery } from '../app/apiSlice'
 import { useAuth } from '../hooks/useAuth'
 
 const CreateGigForm = ({ onClose, onSuccess }) => {
-    const { customer } = useAuth()
+    const { customer, isAuthenticated, isLoading: authLoading, userType } = useAuth()
     const [createGig, createGigStatus] = useCreateGigMutation()
     const { data: specialties, isLoading: specialtiesLoading } = useGetAllSpecialtysQuery()
 
@@ -115,22 +115,71 @@ const CreateGigForm = ({ onClose, onSuccess }) => {
         e.preventDefault()
         setErrorMessage('')
 
+        // Check authentication state before submission
+        if (authLoading) {
+            setErrorMessage('Please wait while we verify your authentication...')
+            return
+        }
+
+        if (!isAuthenticated || userType !== 'customer' || !customer) {
+            setErrorMessage('You must be logged in as a customer to create gigs')
+            return
+        }
+
         try {
             const gigData = {
                 ...form,
                 price: parseFloat(form.price),
                 customer_id: customer.id,
+                pickup_date: new Date(form.pickup_date).toISOString(),
+                dropoff_date: new Date(form.dropoff_date).toISOString(),
                 created_on_date: new Date().toISOString(),
                 featured_image_index: selectedImages.length > 0 ? featuredImageIndex : null
             }
 
-            await createGig(gigData).unwrap()
+            console.log('Submitting gig data:', gigData)
+            const result = await createGig(gigData).unwrap()
+            console.log('Gig created successfully:', result)
             onSuccess?.()
             onClose?.()
         } catch (err) {
             console.error('Create gig error:', err)
-            setErrorMessage(err?.data?.detail || 'Failed to create gig')
+            setErrorMessage(err?.data?.detail || err?.message || 'Failed to create gig')
         }
+    }
+
+    // Show loading state while authentication is being verified
+    if (authLoading) {
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="bg-white rounded-lg shadow-xl p-8">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                        <p>Verifying authentication...</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    // Show error if not authenticated properly
+    if (!isAuthenticated || userType !== 'customer' || !customer) {
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="bg-white rounded-lg shadow-xl p-8">
+                    <div className="text-center">
+                        <h2 className="text-xl font-bold text-red-600 mb-4">Authentication Error</h2>
+                        <p className="text-gray-700 mb-4">You must be logged in as a customer to create gigs.</p>
+                        <button
+                            onClick={onClose}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -526,10 +575,10 @@ const CreateGigForm = ({ onClose, onSuccess }) => {
                         </button>
                         <button
                             type="submit"
-                            disabled={createGigStatus.isLoading}
+                            disabled={createGigStatus.isLoading || authLoading}
                             className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-medium disabled:opacity-50"
                         >
-                            {createGigStatus.isLoading ? 'Creating...' : 'Create Job'}
+                            {authLoading ? 'Verifying...' : createGigStatus.isLoading ? 'Creating...' : 'Create Job'}
                         </button>
                     </div>
                 </form>
