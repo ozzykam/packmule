@@ -23,6 +23,13 @@ export const RequireAuth = ({ children, userType }) => {
         </div>
     }
 
+    // Wait for currentUserType to be determined before proceeding
+    if (isAuthenticated && !currentUserType) {
+        return <div className="flex justify-center items-center min-h-screen">
+            <div className="text-gray-500">Loading user data...</div>
+        </div>
+    }
+
     if (!isAuthenticated) {
         // Redirect to home page where users can choose their path
         return <Navigate to="/" state={{ from: location }} replace />
