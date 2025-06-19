@@ -5,14 +5,14 @@ import {
   useAddPackerSpecialtyMutation,
   useListSpecialtiesForPackerQuery,
   useDeletePackerSpecialtyMutation,
-  useGetPackerQuery,
+  useGetUserQuery,
 } from '../app/apiSlice';
 import SignInForm from './SignInForm';
 
 const PackerSpecialtiesEditor = () => {
   const navigate = useNavigate();
   const { packerId } = useParams();
-  const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery();
+  const { data: packer, isLoading: isPackerLoading } = useGetUserQuery();
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedSpecialtys, setSelectedSpecialtys] = useState([]);
   const { data: packerSpecialtys, isLoading: isPackerSpecialtysLoading } = useListSpecialtiesForPackerQuery(packerId);

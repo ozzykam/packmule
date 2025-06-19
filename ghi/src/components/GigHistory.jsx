@@ -1,11 +1,11 @@
-import { useGetBookedGigsForPackerQuery, useGetPackerQuery, useUpdateGigForPackerMutation } from "../app/apiSlice"
+import { useGetBookedGigsForPackerQuery, useGetUserQuery, useUpdateGigForPackerMutation } from "../app/apiSlice"
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom'
 import SignInForm from "./SignInForm"
 
 const GigHistory = () => {
     const { data: bookedGigs, refetch } = useGetBookedGigsForPackerQuery()
-    const {data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
+    const {data: packer, isLoading: isPackerLoading } = useGetUserQuery()
 
     const [updateGigForPacker] = useUpdateGigForPackerMutation();
     const navigate = useNavigate();

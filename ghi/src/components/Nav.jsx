@@ -1,20 +1,15 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useSignoutMutation, useCustomerSignoutMutation } from '../app/apiSlice';
+import { useSignoutMutation } from '../app/apiSlice';
 import { useAuth } from '../hooks/useAuth';
 
 const Nav = () => {
     const navigate = useNavigate()
     const { isAuthenticated, userType, packer, isLoading } = useAuth()
     const [signout] = useSignoutMutation()
-    const [customerSignout] = useCustomerSignoutMutation()
 
     const handleSignout = async () => {
         try {
-            if (userType === 'customer') {
-                await customerSignout().unwrap()
-            } else {
-                await signout().unwrap()
-            }
+            await signout().unwrap()
             // Redirect to home page after successful signout
             navigate('/')
         } catch (error) {

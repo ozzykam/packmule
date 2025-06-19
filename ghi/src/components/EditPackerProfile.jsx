@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useEditPackerProfileMutation, useGetPackerQuery, useGetPackerProfileQuery } from '../app/apiSlice'
+import { useEditPackerProfileMutation, useGetUserQuery, useGetPackerProfileQuery } from '../app/apiSlice'
 import { useNavigate } from 'react-router-dom'
 import SignInForm from './SignInForm'
 
@@ -12,7 +12,7 @@ const EditPackerProfile = () => {
     const [phone, setPhone] = useState('')
     const [bio, setBio] = useState('')
     const [editProfile, editPofileStatus] = useEditPackerProfileMutation()
-    const { data: logged_user, isLoading: isLoggedUserLoading } = useGetPackerQuery()
+    const { data: logged_user, isLoading: isLoggedUserLoading } = useGetUserQuery()
     const { data: packer, isLoading: isPackerLoading } = useGetPackerProfileQuery()
 
     useEffect(() => {

@@ -13,14 +13,14 @@ export const packmuleApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        // AUTH ROUTES
-        getPacker: builder.query({
+        // UNIFIED AUTH ROUTES
+        getUser: builder.query({
             query: () => ({ url: '/api/auth/authenticate' }),
-            providesTags: ['Packer'],
+            providesTags: ['User'],
         }),
         signout: builder.mutation({
             query: () => ({ url: '/api/auth/signout', method: 'DELETE' }),
-            invalidatesTags: ['Packer'],
+            invalidatesTags: ['User'],
         }),
         signin: builder.mutation({
             query: (body) => ({
@@ -28,7 +28,7 @@ export const packmuleApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Packer'],
+            invalidatesTags: ['User'],
         }),
         signup: builder.mutation({
             query: (body) => ({
@@ -36,7 +36,7 @@ export const packmuleApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Packer'],
+            invalidatesTags: ['User'],
         }),
 
         // GIG ROUTES
@@ -149,31 +149,6 @@ export const packmuleApi = createApi({
             invalidatesTags: ['PackerProfile'],
         }),
 
-        // CUSTOMER AUTH ROUTES
-        getCustomer: builder.query({
-            query: () => ({ url: '/api/customer/auth/authenticate' }),
-            providesTags: ['Customer'],
-        }),
-        customerSignout: builder.mutation({
-            query: () => ({ url: '/api/customer/auth/signout', method: 'DELETE' }),
-            invalidatesTags: ['Customer'],
-        }),
-        customerSignin: builder.mutation({
-            query: (body) => ({
-                url: '/api/customer/auth/signin',
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['Customer'],
-        }),
-        customerSignup: builder.mutation({
-            query: (body) => ({
-                url: '/api/customer/auth/signup',
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['Customer'],
-        }),
     }),
 })
 
@@ -184,7 +159,7 @@ export const {
     useDeleteGigMutation,
     useGetGigDetailsQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
-    useGetPackerQuery,
+    useGetUserQuery,
     useSignoutMutation,
     useSigninMutation,
     useSignupMutation,
@@ -201,9 +176,4 @@ export const {
     useGetBookedGigsForPackerQuery,
     useDeletePackerFromGigMutation,
     useGetGigsForPackerWithStatusQuery,
-    // Customer hooks
-    useGetCustomerQuery,
-    useCustomerSignoutMutation,
-    useCustomerSigninMutation,
-    useCustomerSignupMutation,
 } = packmuleApi

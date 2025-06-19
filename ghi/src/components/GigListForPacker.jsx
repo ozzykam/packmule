@@ -1,9 +1,9 @@
-import { useGetBookedGigsForPackerQuery, useGetPackerQuery } from "../app/apiSlice"
+import { useGetBookedGigsForPackerQuery, useGetUserQuery } from "../app/apiSlice"
 import { Link } from 'react-router-dom';
 
 const GigListForPacker = () => {
     const { data: gigListForPacker, isLoading: isGigListForPackerLoading } = useGetBookedGigsForPackerQuery()
-    const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
+    const { data: packer, isLoading: isPackerLoading } = useGetUserQuery()
 
     if (isPackerLoading || isGigListForPackerLoading) {
         return <div>Loading Gigs...</div>;

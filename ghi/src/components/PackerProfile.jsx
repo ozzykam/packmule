@@ -1,10 +1,10 @@
 import { useParams, Link } from "react-router-dom"
-import { useGetPackerProfileQuery, useGetPackerQuery, useListSpecialtiesForPackerQuery } from "../app/apiSlice"
+import { useGetPackerProfileQuery, useGetUserQuery, useListSpecialtiesForPackerQuery } from "../app/apiSlice"
 import SignInForm from "./SignInForm";
 
 const PackerProfile = () => {
     const params = useParams();
-    const {data: user_logged, isLoading: isUserLoggedLoading } = useGetPackerQuery()
+    const {data: user_logged, isLoading: isUserLoggedLoading } = useGetUserQuery()
     const {data: packer, isLoading: isPackerLoading } = useGetPackerProfileQuery()
     const {data: packer_specialties, isLoading: isPackerSpecialtysLoading } = useListSpecialtiesForPackerQuery(params.packerId)
 

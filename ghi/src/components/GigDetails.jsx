@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import {
     useGetGigDetailsQuery,
-    useGetPackerQuery,
+    useGetUserQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
     useGetGigsForPackersListQuery,
     useAddGigtoPackerMutation,
@@ -13,7 +13,7 @@ import ImageStack from './ImageStack'
 
 const GigDetails = () => {
     const params = useParams()
-    const { data: packer, isLoading: isPackerLoading } = useGetPackerQuery()
+    const { data: packer, isLoading: isPackerLoading } = useGetUserQuery()
     const { data: gig_data, isLoading: isGigLoading } = useGetGigDetailsQuery(params.gigId)
     const { data: gigs_for_packers_data, refetch: refectchUseGetGigsForPackers } = useGetGigsForPackersListQuery(params.gigId)
     const { data: specialtys_data, isLoading: isSpecialtyLoading } = useListGigSpecialtiesForGigByGigIdQuery(params.gigId)

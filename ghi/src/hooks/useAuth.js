@@ -1,18 +1,16 @@
-import { useGetPackerQuery, useGetCustomerQuery } from '../app/apiSlice'
+import { useGetUserQuery } from '../app/apiSlice'
 
 export function useAuth() {
-    const { data: packer, isLoading: packerLoading, error: packerError } = useGetPackerQuery()
-    const { data: customer, isLoading: customerLoading, error: customerError } = useGetCustomerQuery()
+    const { data: user, isLoading, error } = useGetUserQuery()
 
-    const user = packer || customer
-    const isLoading = packerLoading || customerLoading
-    const isAuthenticated = (!!packer && !packerError) || (!!customer && !customerError)
+    const isAuthenticated = !!user && !error
 
     return {
         user,
-        packer,
-        customer,
-        userType: packer ? 'packer' : customer ? 'customer' : null,
+        // Legacy support for components that expect packer/customer
+        packer: user?.user_type === 'packer' ? user : null,
+        customer: user?.user_type === 'customer' ? user : null,
+        userType: user?.user_type || null,
         isAuthenticated,
         isLoading,
     }

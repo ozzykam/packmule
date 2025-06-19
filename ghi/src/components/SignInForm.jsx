@@ -24,8 +24,14 @@ const SignInForm = () => {
         e.preventDefault()
         try {
             const response = await signin({ username, password }).unwrap()
-            if (response.token) {
-                localStorage.setItem('token', response.token)
+            console.log('Signin successful:', response)
+            
+            // Check user type and navigate accordingly
+            if (response.user_type === 'packer') {
+                navigate('/marketplace')
+            } else {
+                // If not a packer, show error
+                setErrorMessage('This account is not a packer account. Please use the customer login.')
             }
         } catch (err) {
             console.error('Signin error:', err)

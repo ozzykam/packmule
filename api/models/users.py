@@ -44,6 +44,7 @@ class UserLogin(BaseModel):
 class UserSignin(BaseModel):
     username: str
     id: int
+    user_type: UserType
 
 
 class UserResponse(BaseModel):

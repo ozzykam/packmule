@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useGetCustomerQuery, useGetAllGigsQuery, useDeleteGigMutation } from '../app/apiSlice'
+import { useGetUserQuery, useGetAllGigsQuery, useDeleteGigMutation } from '../app/apiSlice'
 import CreateGigForm from './CreateGigForm'
 import EditGigForm from './EditGigForm'
 
 const CustomerDashboard = () => {
-    const { data: customer, isLoading: customerLoading } = useGetCustomerQuery()
+    const { data: customer, isLoading: customerLoading } = useGetUserQuery()
     const { data: allGigs, isLoading: gigsLoading, refetch: refetchGigs } = useGetAllGigsQuery()
     const [deleteGig, deleteGigStatus] = useDeleteGigMutation()
     const [showCreateForm, setShowCreateForm] = useState(false)

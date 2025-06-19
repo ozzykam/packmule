@@ -13,6 +13,7 @@ const SignUpForm = () => {
         email: '',
         phone: '',
         bio: '',
+        user_type: 'packer', // Set packer type
     })
 
     const [errorMessage, setErrorMessage] = useState('')

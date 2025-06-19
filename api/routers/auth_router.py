@@ -82,7 +82,7 @@ async def signin(
     queries: UserQueries = Depends(),
 ) -> UserSignin:
     """
-    Signs the user in when they use the Sign In form (Packer login)
+    Signs the user in when they use the Sign In form (accepts all user types)
     """
 
     # Try to get the user from the database
@@ -91,13 +91,6 @@ async def signin(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
-        )
-
-    # Verify this is a packer account
-    if user.user_type != "packer":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="This account is not a packer account. Please use the customer login.",
         )
 
     # Verify the user's password
@@ -126,12 +119,14 @@ async def signin(
     return UserSignin(
         id=user.id,
         username=user.username,
+        user_type=user.user_type,
     )
 
 
 @router.get("/authenticate")
 async def authenticate(
     user: UserSignin = Depends(try_get_jwt_user_data),
+    queries: UserQueries = Depends(),
 ) -> UserSignin | None:
     """
     This function returns the user if the user is logged in.
@@ -144,7 +139,19 @@ async def authenticate(
     This can be used in your frontend to determine if a user
     is logged in or not
     """
-    return user
+    if not user:
+        return None
+    
+    # Get full user details to return complete info including user_type
+    full_user = queries.get_by_id(user.id)
+    if not full_user:
+        return None
+        
+    return UserSignin(
+        id=full_user.id,
+        username=full_user.username,
+        user_type=full_user.user_type,
+    )
 
 
 @router.delete("/signout")
