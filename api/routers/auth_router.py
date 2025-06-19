@@ -93,6 +93,13 @@ async def signin(
             detail="Incorrect username or password",
         )
 
+    # Verify this is a packer account
+    if user.user_type != "packer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="This account is not a packer account. Please use the customer login.",
+        )
+
     # Verify the user's password
     if not verify_password(user_request.password, user.password):
         raise HTTPException(

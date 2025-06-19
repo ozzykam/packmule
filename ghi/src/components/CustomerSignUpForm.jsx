@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSignupMutation } from '../app/apiSlice'
+import { useCustomerSignupMutation } from '../app/apiSlice'
 
 const CustomerSignUpForm = () => {
     const navigate = useNavigate()
-    const [signup, signupStatus] = useSignupMutation()
+    const [customerSignup, signupStatus] = useCustomerSignupMutation()
 
     const [form, setForm] = useState({
         username: '',
@@ -13,7 +13,6 @@ const CustomerSignUpForm = () => {
         email: '',
         phone: '',
         bio: '',
-        user_type: 'customer', // Set customer type
     })
 
     const [errorMessage, setErrorMessage] = useState('')
@@ -30,15 +29,15 @@ const CustomerSignUpForm = () => {
     async function handleFormSubmit(e) {
         e.preventDefault()
         try {
-            const result = await signup(form).unwrap()
-            console.log('Signup successful:', result)
+            const result = await customerSignup(form).unwrap()
+            console.log('Customer signup successful:', result)
             
             // Navigate to customer dashboard after successful signup
             setTimeout(() => {
                 navigate('/customer/dashboard')
             }, 100)
         } catch (err) {
-            console.error('Signup error:', err)
+            console.error('Customer signup error:', err)
         }
     }
 

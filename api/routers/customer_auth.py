@@ -124,6 +124,7 @@ async def customer_signin(
     return UserSignin(
         id=user.id,
         username=user.username,
+        user_type=user.user_type,
     )
 
 

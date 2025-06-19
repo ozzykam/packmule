@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSigninMutation } from '../app/apiSlice'
+import { useCustomerSigninMutation } from '../app/apiSlice'
 
 const CustomerSignInForm = () => {
     const navigate = useNavigate()
-    const [signin, signinStatus] = useSigninMutation()
+    const [customerSignin, signinStatus] = useCustomerSigninMutation()
 
     const [form, setForm] = useState({
         username: '',
@@ -25,18 +25,12 @@ const CustomerSignInForm = () => {
     async function handleFormSubmit(e) {
         e.preventDefault()
         try {
-            const result = await signin(form).unwrap()
-            console.log('Signin successful:', result)
-            
-            // Check user type and navigate accordingly
-            if (result.user_type === 'customer') {
-                navigate('/customer/dashboard')
-            } else {
-                // If not a customer, redirect to home with error
-                setErrorMessage('This account is not a customer account. Please use the packer login.')
-            }
+            const result = await customerSignin(form).unwrap()
+            console.log('Customer signin successful:', result)
+            // Navigate to customer dashboard - backend already validated user type
+            navigate('/customer/dashboard')
         } catch (err) {
-            console.error('Signin error:', err)
+            console.error('Customer signin error:', err)
         }
     }
 

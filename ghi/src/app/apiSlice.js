@@ -22,6 +22,8 @@ export const packmuleApi = createApi({
             query: () => ({ url: '/api/auth/signout', method: 'DELETE' }),
             invalidatesTags: ['User'],
         }),
+        
+        // PACKER AUTH ROUTES
         signin: builder.mutation({
             query: (body) => ({
                 url: '/api/auth/signin',
@@ -33,6 +35,24 @@ export const packmuleApi = createApi({
         signup: builder.mutation({
             query: (body) => ({
                 url: '/api/auth/signup',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User'],
+        }),
+
+        // CUSTOMER AUTH ROUTES
+        customerSignin: builder.mutation({
+            query: (body) => ({
+                url: '/api/customer/auth/signin',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['User'],
+        }),
+        customerSignup: builder.mutation({
+            query: (body) => ({
+                url: '/api/customer/auth/signup',
                 method: 'POST',
                 body,
             }),
@@ -159,10 +179,15 @@ export const {
     useDeleteGigMutation,
     useGetGigDetailsQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
+    // Unified auth hooks
     useGetUserQuery,
     useSignoutMutation,
+    // Packer auth hooks
     useSigninMutation,
     useSignupMutation,
+    // Customer auth hooks
+    useCustomerSigninMutation,
+    useCustomerSignupMutation,
     useGetAllSpecialtysQuery,
     useListSpecialtiesForPackerQuery,
     useAddPackerSpecialtyMutation,
