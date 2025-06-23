@@ -181,3 +181,6 @@ scratch-paper.txt
 **/*npm-debug.log*
 **/*yarn-debug.log*
 **/*yarn-error.log*
+
+# Hide troubleshooting endpoints
+api/diagnostics.py
