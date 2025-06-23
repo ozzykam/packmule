@@ -47,7 +47,7 @@ const SignUpForm = () => {
         <div className="flex justify-center">
             <form
                 onSubmit={handleFormSubmit}
-                className="bg-white rounded-3xl shadow-2xl w-1/3 px-10 p-10 m-9 border-2 border-gray-200"
+                className="bg-white rounded-3xl shadow-2xl px-10 p-10 m-9 border-2 border-gray-200"
             >
                 <h1 className="pl-0 pt-6 pb-2">Sign Up</h1>
                 <p className="px-10 pl-0 mb-7">Create your account</p>

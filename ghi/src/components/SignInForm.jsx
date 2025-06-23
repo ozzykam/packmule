@@ -35,7 +35,7 @@ const SignInForm = () => {
     return (
         <div className="flex justify-center outline-gray-100">
             <form
-                className="bg-white rounded-3xl shadow-2xl w-1/3 px-10 p-10 m-9 border-2 border-gray-200"
+                className="bg-white rounded-3xl shadow-2xl px-10 p-10 m-9 border-2 border-gray-200"
                 onSubmit={handleFormSubmit}
             >
                 <h1 className="pl-0 pt-6 pb-2">Login</h1>

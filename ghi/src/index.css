@@ -126,10 +126,8 @@ h2 {
 nav {
     display: flex;
     flex-wrap: wrap;
-    padding: 2em;
     margin: 0;
     list-style: none;
-    justify-content: center;
 }
 
 nav ul {

@@ -392,6 +392,10 @@ class GigQueries:
                             dropoff_location=record[7],
                             dropoff_date=record[8],
                             created_on_date=record[9],
+                            customer_id=record[10],
+                            images=record[11] if record[11] else [],
+                            specialties=record[12] if record[12] else [],
+                            featured_image_index=record[13],
                         )
                         for record in records
                     ]
