@@ -70,7 +70,10 @@ export const packmuleApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Gigs'],
+            invalidatesTags: (result, error, body) => [
+                'Gigs',
+                ...(result ? [{ type: 'GigSpecialties', id: result.id }] : [])
+            ],
         }),
         getGigDetails: builder.query({
             query: (gigId) => ({ url: `/api/gig/${gigId}` }),
@@ -78,6 +81,9 @@ export const packmuleApi = createApi({
         }),
         listGigSpecialtiesForGigByGigId: builder.query({
             query: (gigId) => ({ url: `/api/gigs/${gigId}/specialtys` }),
+            providesTags: (result, error, gigId) => [
+                { type: 'GigSpecialties', id: gigId }
+            ],
         }),
         updateGig: builder.mutation({
             query: ({ gigId, body }) => ({
@@ -85,7 +91,11 @@ export const packmuleApi = createApi({
                 method: 'PUT',
                 body,
             }),
-            invalidatesTags: ['Gigs', 'GigDetails'],
+            invalidatesTags: (result, error, { gigId }) => [
+                'Gigs',
+                'GigDetails',
+                { type: 'GigSpecialties', id: gigId }
+            ],
         }),
         deleteGig: builder.mutation({
             query: (gigId) => ({

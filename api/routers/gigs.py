@@ -47,12 +47,17 @@ def create_a_gig(
     if gig.specialties:
         for specialty_id in gig.specialties:
             try:
-                specialty_queries.create_gig_specialty(
-                    gig_id=created_gig.id,
-                    specialty_id=specialty_id,
-                    specialty_name="",  # Will be filled by the query
-                    specialty_type_id=0  # Will be filled by the query
-                )
+                # First, get the specialty details
+                specialty = specialty_queries.get_specialty_by_id(specialty_id)
+                if specialty:
+                    specialty_queries.create_gig_specialty(
+                        gig_id=created_gig.id,
+                        specialty_id=specialty_id,
+                        specialty_name=specialty.name,
+                        specialty_type_id=specialty.specialty_type_id
+                    )
+                else:
+                    print(f"Specialty {specialty_id} not found, skipping")
             except Exception as e:
                 # Continue if specialty fails, don't break gig creation
                 print(f"Failed to add specialty {specialty_id} to gig {created_gig.id}: {e}")
@@ -88,6 +93,7 @@ def update_gig(
     gig_id: int, 
     gig: GigIn, 
     queries: GigQueries = Depends(),
+    specialty_queries: SpecialtyQueries = Depends(),
     user: UserResponse = Depends(try_get_jwt_user_data)
 ) -> GigOut:
     if user is None:
@@ -107,7 +113,43 @@ def update_gig(
     # Ensure customer_id is set to the authenticated user's ID (prevent tampering)
     gig.customer_id = user.id
     
-    return queries.update_gig(gig_id, gig)
+    # Update the gig first
+    updated_gig = queries.update_gig(gig_id, gig)
+    
+    # Handle specialty updates if specialties are provided
+    if hasattr(gig, 'specialties') and gig.specialties is not None:
+        # Get current specialties for this gig
+        current_specialties = specialty_queries.get_all_specialties_by_gig(gig_id)
+        current_specialty_ids = {s.specialty_id for s in current_specialties}
+        new_specialty_ids = set(gig.specialties)
+        
+        # Remove specialties that are no longer selected
+        specialties_to_remove = current_specialty_ids - new_specialty_ids
+        for specialty_id in specialties_to_remove:
+            try:
+                specialty_queries.delete_gig_specialty(gig_id, specialty_id)
+            except Exception as e:
+                print(f"Failed to remove specialty {specialty_id} from gig {gig_id}: {e}")
+        
+        # Add new specialties
+        specialties_to_add = new_specialty_ids - current_specialty_ids
+        for specialty_id in specialties_to_add:
+            try:
+                # Get the specialty details
+                specialty = specialty_queries.get_specialty_by_id(specialty_id)
+                if specialty:
+                    specialty_queries.create_gig_specialty(
+                        gig_id=gig_id,
+                        specialty_id=specialty_id,
+                        specialty_name=specialty.name,
+                        specialty_type_id=specialty.specialty_type_id
+                    )
+                else:
+                    print(f"Specialty {specialty_id} not found, skipping")
+            except Exception as e:
+                print(f"Failed to add specialty {specialty_id} to gig {gig_id}: {e}")
+    
+    return updated_gig
 
 
 @router.post("/api/gigs/{gig_id}/specialtys", response_model=GigSpecialtyOut)

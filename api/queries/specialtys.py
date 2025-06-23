@@ -71,23 +71,29 @@ class SpecialtyQueries:
             )
 
     def get_specialty_by_id(self, specialty_id: int) -> SpecialtyOut:
-        with pool.connection() as conn:
-            with conn.cursor() as specialty_db:
-                specialty = specialty_db.execute(
-                    """
-                    SELECT *
-                    FROM specialties
-                    WHERE id = %s
-                    """,
-                    [specialty_id],
-                )
-                record = specialty.fetchone()
-                return SpecialtyOut(
-                    id=record[0],
-                    name=record[1],
-                    description=record[2],
-                    specialty_type_id=record[3],
-                )
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as specialty_db:
+                    specialty = specialty_db.execute(
+                        """
+                        SELECT *
+                        FROM specialties
+                        WHERE id = %s
+                        """,
+                        [specialty_id],
+                    )
+                    record = specialty.fetchone()
+                    if record is None:
+                        return None
+                    return SpecialtyOut(
+                        id=record[0],
+                        name=record[1],
+                        description=record[2],
+                        specialty_type_id=record[3],
+                    )
+        except Exception as e:
+            print(f"Error fetching specialty {specialty_id}: {e}")
+            return None
 
     def create_packer_specialty(
         self,

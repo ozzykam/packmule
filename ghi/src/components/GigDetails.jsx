@@ -4,6 +4,7 @@ import {
     useGetGigDetailsQuery,
     useGetUserQuery,
     useListGigSpecialtiesForGigByGigIdQuery,
+    useListSpecialtiesForPackerQuery,
     useGetGigsForPackersListQuery,
     useAddGigtoPackerMutation,
     useDeletePackerFromGigMutation,
@@ -17,6 +18,9 @@ const GigDetails = () => {
     const { data: gig_data, isLoading: isGigLoading } = useGetGigDetailsQuery(params.gigId)
     const { data: gigs_for_packers_data, refetch: refectchUseGetGigsForPackers } = useGetGigsForPackersListQuery(params.gigId)
     const { data: specialtys_data, isLoading: isSpecialtyLoading } = useListGigSpecialtiesForGigByGigIdQuery(params.gigId)
+    const { data: packerSpecialties, isLoading: isPackerSpecialtiesLoading } = useListSpecialtiesForPackerQuery(packer?.id, {
+        skip: !packer?.id // Skip query if no packer ID
+    })
     const [ isBooked, setIsBooked ] = useState(false)
     const [ showCarousel, setShowCarousel ] = useState(false)
     const [ carouselStartIndex, setCarouselStartIndex ] = useState(0)
@@ -30,7 +34,7 @@ const GigDetails = () => {
         }
     }, [gigs_for_packers_data, gig_data])
 
-    if (isGigLoading || isSpecialtyLoading || isPackerLoading) {
+    if (isGigLoading || isSpecialtyLoading || isPackerLoading || isPackerSpecialtiesLoading) {
         return <div>Loading...</div>
     }
 
@@ -49,6 +53,47 @@ const GigDetails = () => {
         vehicleSpecialties = specialtys_data.filter(
             (specialty) => specialty.specialty_type_id === 3
         )
+    }
+
+    // Check if packer has all required specialties
+    const hasAllRequiredSpecialties = () => {
+        if (!specialtys_data || !packerSpecialties) return true // If no requirements, allow booking
+        
+        const requiredSpecialtyIds = new Set(specialtys_data.map(s => s.specialty_id))
+        const packerSpecialtyIds = new Set(packerSpecialties.map(s => s.specialty_id))
+        
+        // Check if all required specialties are in packer's specialties
+        return [...requiredSpecialtyIds].every(id => packerSpecialtyIds.has(id))
+    }
+
+    // Get missing specialties for display
+    const getMissingSpecialties = () => {
+        if (!specialtys_data || !packerSpecialties) return []
+        
+        const requiredSpecialtyIds = new Set(specialtys_data.map(s => s.specialty_id))
+        const packerSpecialtyIds = new Set(packerSpecialties.map(s => s.specialty_id))
+        
+        return specialtys_data.filter(specialty => 
+            !packerSpecialtyIds.has(specialty.specialty_id)
+        )
+    }
+
+    const canBookGig = hasAllRequiredSpecialties()
+    const missingSpecialties = getMissingSpecialties()
+
+    // Debug logging
+    console.log('Debug Specialty Matching:', {
+        specialtys_data,
+        packerSpecialties,
+        canBookGig,
+        missingSpecialties,
+        packer
+    })
+
+    // Helper function to check if packer has a specific specialty
+    const packerHasSpecialty = (specialtyId) => {
+        if (!packerSpecialties) return false
+        return packerSpecialties.some(s => s.specialty_id === specialtyId)
     }
 
     const handleBookGig = async () => {
@@ -157,21 +202,23 @@ const GigDetails = () => {
                                         </div>
                                         <p className="gig_specialty_list_horizontal">
                                             {equipmentSpecialties.map(
-                                                (specialty, counter) => (
-                                                    <li
-                                                        key={specialty.id}
-                                                        className="bg-gray-950 text-white
-                                                py-2 px-4 mb-8 rounded-full focus:outline-none
-                                                focus:shadow-outline"
-                                                    >
-                                                        {
-                                                            specialty.specialty_name
-                                                        }
-                                                        {counter <
-                                                            equipmentSpecialties.length -
-                                                                1 && ''}
-                                                    </li>
-                                                )
+                                                (specialty, counter) => {
+                                                    const hasSpecialty = packerHasSpecialty(specialty.specialty_id)
+                                                    return (
+                                                        <li
+                                                            key={specialty.id}
+                                                            className={`py-2 px-4 mb-8 rounded-full focus:outline-none
+                                                            focus:shadow-outline flex items-center gap-2
+                                                            ${hasSpecialty 
+                                                                ? 'bg-green-600 text-white' 
+                                                                : 'bg-red-500 text-white'
+                                                            }`}
+                                                        >
+                                                            {hasSpecialty ? '✓' : '✗'}
+                                                            {specialty.specialty_name}
+                                                        </li>
+                                                    )
+                                                }
                                             )}
                                         </p>
                                     </>
@@ -183,19 +230,23 @@ const GigDetails = () => {
                                         </div>
                                         <p className="gig_specialty_list_horizontal">
                                             {experienceSpecialties.map(
-                                                (specialty, counter) => (
-                                                    <li
-                                                        key={specialty.id}
-                                                        className="bg-gray-950 text-white
-                                                    py-2 px-4 mb-8 rounded-full focus:outline-none
-                                                    focus:shadow-outline"
-                                                    >
-                                                        {specialty.specialty_name}
-                                                        {counter <
-                                                            experienceSpecialties.length -
-                                                                1 && ''}
-                                                    </li>
-                                                )
+                                                (specialty, counter) => {
+                                                    const hasSpecialty = packerHasSpecialty(specialty.specialty_id)
+                                                    return (
+                                                        <li
+                                                            key={specialty.id}
+                                                            className={`py-2 px-4 mb-8 rounded-full focus:outline-none
+                                                            focus:shadow-outline flex items-center gap-2
+                                                            ${hasSpecialty 
+                                                                ? 'bg-green-600 text-white' 
+                                                                : 'bg-red-500 text-white'
+                                                            }`}
+                                                        >
+                                                            {hasSpecialty ? '✓' : '✗'}
+                                                            {specialty.specialty_name}
+                                                        </li>
+                                                    )
+                                                }
                                             )}
                                         </p>
                                     </>
@@ -207,19 +258,23 @@ const GigDetails = () => {
                                     </div>
                                     <p className="gig_specialty_list_horizontal">
                                         {vehicleSpecialties.map(
-                                            (specialty, counter) => (
-                                                <li
-                                                    key={specialty.id}
-                                                    className="bg-gray-950 text-white
-                                                py-2 px-4 mb-8 rounded-full focus:outline-none
-                                                focus:shadow-outline"
-                                                >
-                                                    {specialty.specialty_name}
-                                                    {counter <
-                                                        vehicleSpecialties.length -
-                                                            1 && ''}
-                                                </li>
-                                            )
+                                            (specialty, counter) => {
+                                                const hasSpecialty = packerHasSpecialty(specialty.specialty_id)
+                                                return (
+                                                    <li
+                                                        key={specialty.id}
+                                                        className={`py-2 px-4 mb-8 rounded-full focus:outline-none
+                                                        focus:shadow-outline flex items-center gap-2
+                                                        ${hasSpecialty 
+                                                            ? 'bg-green-600 text-white' 
+                                                            : 'bg-red-500 text-white'
+                                                        }`}
+                                                    >
+                                                        {hasSpecialty ? '✓' : '✗'}
+                                                        {specialty.specialty_name}
+                                                    </li>
+                                                )
+                                            }
                                         )}
                                     </p>
                                     </>
@@ -235,6 +290,30 @@ const GigDetails = () => {
                             <h1 className="pl-0 flex justify-end">
                                 ${gig_data.price}
                             </h1>
+                            
+                            {/* Missing Specialties Warning */}
+                            {!canBookGig && missingSpecialties.length > 0 && (
+                                <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 rounded">
+                                    <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            <span className="text-red-400">⚠️</span>
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-sm text-red-700 font-medium">
+                                                Missing Required Specialties:
+                                            </p>
+                                            <ul className="text-sm text-red-600 mt-1 list-disc list-inside">
+                                                {missingSpecialties.map(specialty => (
+                                                    <li key={specialty.specialty_id}>
+                                                        {specialty.specialty_name}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
                             <div className="flex justify-end">
                                 {isBooked ? (
                                     <>
@@ -252,14 +331,16 @@ const GigDetails = () => {
                                     </>
                                 ) : (
                                     <button
-                                        onClick={handleBookGig}
-                                        className="bg-gradient-to-br from-orange-600 to-orange-400 text-white
-                                        font-bold py-4 px-8 rounded-full shadow-[0_10px_20px_-9px_rgba(227,136,0,1)] focus:outline-none
-                                        focus:shadow-outline hover:brightness-[1.05] hover:scale-[1.03]
-                                        hover:shadow-[0_35px_60px_-9px_rgba(227,136,0,0.7)]
-                                        transition duration-200 ease-in-out"
+                                        onClick={canBookGig ? handleBookGig : undefined}
+                                        disabled={!canBookGig}
+                                        className={`font-bold py-4 px-8 rounded-full focus:outline-none
+                                        focus:shadow-outline transition duration-200 ease-in-out
+                                        ${canBookGig 
+                                            ? 'bg-gradient-to-br from-orange-600 to-orange-400 text-white shadow-[0_10px_20px_-9px_rgba(227,136,0,1)] hover:brightness-[1.05] hover:scale-[1.03] hover:shadow-[0_35px_60px_-9px_rgba(227,136,0,0.7)]' 
+                                            : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                                        }`}
                                     >
-                                        Book Gig!
+                                        {canBookGig ? 'Book Gig!' : 'Missing Specialties'}
                                     </button>
                                 )}
                             </div>

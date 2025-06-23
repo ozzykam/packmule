@@ -23,6 +23,15 @@ const GigList = () => {
 
     const bookedGigs = gigList.map(gig => gig.gig_id)
     const openGigs = gigDetailList.filter( gig => !bookedGigs.includes(gig.id))
+    const featuredImage = (gig) => {
+        const defaultImage = 'https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg';
+        if (gig.images && gig.images.length > 1 && gig.featured_image_index !== null) {
+            return gig.images[gig.featured_image_index]
+        } else if (gig.images && gig.images.length === 1) {
+            return gig.images[0];
+        }
+        return defaultImage;
+    }
 
     return (
         <div>
@@ -36,8 +45,9 @@ const GigList = () => {
                 <Link to={`/gig/${gig.id}`} className="no-hyperlink" key={gig.id}>
                     <div className="gig-card">
                         <div className="card-body hover:brightness-[1.1] transition duration-300 ease-in-out">
-                            <img src="https://images01.military.com/sites/default/files/styles/full/public/2023-08/stock%20moving%20boxes%20and%20plants%201800%20x%201200.jpg"
-                            alt="Gig" />
+                            {}
+                            <img src={featuredImage(gig)}
+                            alt={gig.title} />
                             <div className="gig-card-details">
                                 <div className="card-title"><strong>{gig.title}</strong></div>
                                 <div className="gig-card-detail-location">{gig.pickup_location.city}, {gig.pickup_location.state}</div>
