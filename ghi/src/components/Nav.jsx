@@ -32,7 +32,7 @@ const Nav = () => {
 
     return (
         <>
-            <nav className="bg-white shadow-md">
+            <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
                 <div className="w-full flex items-center justify-between px-6 lg:px-8 py-4">
                     {/* Logo - Left Side */}
                     <div className="flex items-center">
@@ -50,6 +50,18 @@ const Nav = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-6">
+                        <NavLink 
+                            to="/about" 
+                            className={({ isActive }) => 
+                                `font-semibold transition-colors duration-200 ${
+                                    isActive 
+                                        ? 'text-gray-800 border-b-2 border-gray-800' 
+                                        : 'text-gray-600 hover:text-gray-800'
+                                }`
+                            }
+                        >
+                            About
+                        </NavLink>
                         {userType === 'packer' && (
                             <>
                                 <NavLink 
@@ -195,6 +207,22 @@ const Nav = () => {
                         {/* Sidebar Navigation */}
                         <div className="flex-1 py-4 overflow-y-auto">
                             <nav className="space-y-2 px-4">
+                                <NavLink 
+                                    to="/about" 
+                                    onClick={closeMobileMenu}
+                                    className={({ isActive }) => 
+                                        `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
+                                            isActive 
+                                                ? 'bg-gray-100 text-gray-800 border-l-4 border-gray-600' 
+                                                : 'text-gray-600 hover:bg-gray-50'
+                                        }`
+                                    }
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>About</span>
+                                </NavLink>
                                 {userType === 'packer' && (
                                     <>
                                         <NavLink 

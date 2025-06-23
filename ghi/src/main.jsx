@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import HomePage from './components/HomePage'
+import About from './components/About'
 import SignInForm from './components/SignInForm'
 import SignUpForm from './components/SignUpForm'
 import CustomerSignInForm from './components/CustomerSignInForm'
@@ -57,6 +58,12 @@ const router = createBrowserRouter(
                 {
                     index: true,
                     element: <HomePage />
+                },
+
+                // ABOUT PAGE
+                {
+                    path: 'about',
+                    element: <About />
                 },
 
                 // ✅ PACKER PROTECTED ROUTES BELOW:

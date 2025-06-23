@@ -14,7 +14,9 @@ function App() {
             <header className="App-header">
                 <Nav />
             </header>
-            <Outlet />
+            <div className="pt-20">
+                <Outlet />
+            </div>
         </div>
     )
 }
