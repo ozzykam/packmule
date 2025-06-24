@@ -7,11 +7,9 @@ const About = () => {
                 {/* Header Section */}
                 <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-12 text-white">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold mb-4">PackMule</h1>
                         <img
-                            src="../../public/images/packmule_logo.png"
+                            src="images/specialties_icons/packmule_logo_2_wht.png"
                             alt="PackMule Logo"
-                            className="w-16 h-16 mr-4"
                         />
                     </div>
                 </div>
@@ -23,13 +21,18 @@ const About = () => {
                             About the Developer
                         </h2>
                         <p className="text-gray-700 mb-6">
-                            Hey there — I’m <strong>Aziz J. Kamara</strong>, a
+                            <img
+                                src="images/aziz-pic.png"
+                                alt="Aziz J. Kamara"
+                                className="w-24 float-left mr-4 mb-2 rounded"
+                            />
+                            Hey there! I’m <strong>Aziz J. Kamara</strong>, a
                             software developer with a bit of a nontraditional
                             path. Before diving headfirst into tech, I spent
                             over a decade working across finance, graphic
                             design, and hospitality. That background taught me
                             how to connect with people, stay adaptable, and
-                            think creatively — skills that now shape the way I
+                            think creatively -- skills that now shape the way I
                             build software.
                         </p>
 
@@ -37,23 +40,23 @@ const About = () => {
                             <strong>PackMule</strong> is one of the most
                             challenging (and rewarding) projects I’ve taken on
                             so far. It’s a platform designed to help everyday
-                            people find and hire reliable gig workers — packers
-                            — when they need help moving. Whether you’re
-                            offering your time and muscle or just need an extra
-                            set of hands, the goal is to make the process
-                            simple, intuitive, and stress-free.
+                            people find and hire reliable gig workers (
+                            <em>packers</em>) when they need help moving.
+                            Whether you’re offering your time and muscle or just
+                            need an extra set of hands, the goal is to make the
+                            process simple, intuitive, and stress-free.
                         </p>
 
                         <p className="text-gray-700 mb-6">
                             At the end of the day, I believe in taking care of
                             people. Family, community, kindness, grace, and
-                            compassion — these are the things that matter to me.
-                            I try to build tech that reflects those values,
+                            compassion -- these are the things that matter to
+                            me. I try to build tech that reflects those values,
                             whether it’s through the user experience or the
                             intention behind the code.
                         </p>
                         <p className="text-gray-700 mb-6">
-                            Thanks for stopping by — I’m glad you’re here.
+                            Thanks for stopping by, I’m glad you’re here!
                         </p>
 
                         {/* Tech Stack Section */}

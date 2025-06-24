@@ -36,7 +36,10 @@ const Nav = () => {
                 <div className="w-full flex items-center justify-between px-6 lg:px-8 py-4">
                     {/* Logo - Left Side */}
                     <div className="flex items-center">
-                        <NavLink to="/" className="flex items-center space-x-4 text-orange-500 font-bold text-xl tracking-tight">
+                        <NavLink
+                            to="/"
+                            className="flex items-center space-x-4 text-orange-500 font-bold text-xl tracking-tight"
+                        >
                             <img
                                 src="images/packmule_logo.png"
                                 width="48"
@@ -50,50 +53,38 @@ const Nav = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-6">
-                        <NavLink 
-                            to="/about" 
-                            className={({ isActive }) => 
-                                `font-semibold transition-colors duration-200 ${
-                                    isActive 
-                                        ? 'text-gray-800 border-b-2 border-gray-800' 
-                                        : 'text-gray-600 hover:text-gray-800'
-                                }`
-                            }
-                        >
-                            About
-                        </NavLink>
                         {userType === 'packer' && (
                             <>
-                                <NavLink 
-                                    to="/marketplace" 
-                                    className={({ isActive }) => 
+                                <NavLink
+                                    to="/marketplace"
+                                    className={({ isActive }) =>
                                         `font-semibold transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'text-orange-600 border-b-2 border-orange-600' 
+                                            isActive
+                                                ? 'text-orange-600 border-b-2 border-orange-600'
                                                 : 'text-orange-400 hover:text-orange-600'
                                         }`
                                     }
                                 >
                                     Marketplace
                                 </NavLink>
-                                <NavLink 
-                                    to="/packer/gigs/booked" 
-                                    className={({ isActive }) => 
+                                <NavLink
+                                    to="/packer/gigs/booked"
+                                    className={({ isActive }) =>
                                         `font-semibold transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'text-orange-600 border-b-2 border-orange-600' 
+                                            isActive
+                                                ? 'text-orange-600 border-b-2 border-orange-600'
                                                 : 'text-orange-400 hover:text-orange-600'
                                         }`
                                     }
                                 >
                                     Your Gigs
                                 </NavLink>
-                                <NavLink 
-                                    to={`/packer/${packer?.id}`} 
-                                    className={({ isActive }) => 
+                                <NavLink
+                                    to={`/packer/${packer?.id}`}
+                                    className={({ isActive }) =>
                                         `font-semibold transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'text-orange-600 border-b-2 border-orange-600' 
+                                            isActive
+                                                ? 'text-orange-600 border-b-2 border-orange-600'
                                                 : 'text-orange-400 hover:text-orange-600'
                                         }`
                                     }
@@ -103,12 +94,12 @@ const Nav = () => {
                             </>
                         )}
                         {userType === 'customer' && (
-                            <NavLink 
-                                to="/customer/dashboard" 
-                                className={({ isActive }) => 
+                            <NavLink
+                                to="/customer/dashboard"
+                                className={({ isActive }) =>
                                     `font-semibold transition-colors duration-200 ${
-                                        isActive 
-                                            ? 'text-blue-600 border-b-2 border-blue-600' 
+                                        isActive
+                                            ? 'text-blue-600 border-b-2 border-blue-600'
                                             : 'text-blue-400 hover:text-blue-600'
                                     }`
                                 }
@@ -118,24 +109,24 @@ const Nav = () => {
                         )}
                         {!isAuthenticated && (
                             <>
-                                <NavLink 
-                                    to="/packer/signin" 
-                                    className={({ isActive }) => 
+                                <NavLink
+                                    to="/packer/signin"
+                                    className={({ isActive }) =>
                                         `font-semibold transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'text-orange-600 border-b-2 border-orange-600' 
+                                            isActive
+                                                ? 'text-orange-600 border-b-2 border-orange-600'
                                                 : 'text-orange-400 hover:text-orange-600'
                                         }`
                                     }
                                 >
                                     Packer Login
                                 </NavLink>
-                                <NavLink 
-                                    to="/customer/signin" 
-                                    className={({ isActive }) => 
+                                <NavLink
+                                    to="/customer/signin"
+                                    className={({ isActive }) =>
                                         `font-semibold transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'text-blue-600 border-b-2 border-blue-600' 
+                                            isActive
+                                                ? 'text-blue-600 border-b-2 border-blue-600'
                                                 : 'text-blue-400 hover:text-blue-600'
                                         }`
                                     }
@@ -152,6 +143,18 @@ const Nav = () => {
                                 Sign Out
                             </button>
                         )}
+                        <NavLink
+                            to="/about"
+                            className={({ isActive }) =>
+                                `font-semibold transition-colors duration-200 ${
+                                    isActive
+                                        ? 'text-gray-800 border-b-2 border-gray-800'
+                                        : 'text-gray-600 hover:text-gray-800'
+                                }`
+                            }
+                        >
+                            About
+                        </NavLink>
                     </div>
 
                     {/* Mobile Hamburger Button - Right Side */}
@@ -161,16 +164,28 @@ const Nav = () => {
                             className="flex items-center px-3 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-700 hover:border-gray-700 transition-colors duration-200"
                             aria-label="Toggle navigation menu"
                         >
-                            <svg 
-                                className={`w-6 h-6 transition-transform duration-200 ${isMobileMenuOpen ? 'rotate-90' : ''}`} 
-                                fill="none" 
-                                stroke="currentColor" 
+                            <svg
+                                className={`w-6 h-6 transition-transform duration-200 ${
+                                    isMobileMenuOpen ? 'rotate-90' : ''
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
                                 {isMobileMenuOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
                                 ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
                                 )}
                             </svg>
                         </button>
@@ -179,27 +194,47 @@ const Nav = () => {
             </nav>
 
             {/* Mobile Sidebar */}
-            <div className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div
+                className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
+                    isMobileMenuOpen
+                        ? 'opacity-100'
+                        : 'opacity-0 pointer-events-none'
+                }`}
+            >
                 {/* Backdrop */}
-                <div 
+                <div
                     className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
                     onClick={closeMobileMenu}
                 ></div>
-                
+
                 {/* Sidebar */}
-                <div className={`fixed right-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-                    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}>
+                <div
+                    className={`fixed right-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+                        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
+                >
                     <div className="flex flex-col h-full">
                         {/* Sidebar Header */}
                         <div className="flex items-center justify-between p-4 border-b">
-                            <span className="text-lg font-semibold text-gray-800">Menu</span>
+                            <span className="text-lg font-semibold text-gray-800">
+                                Menu
+                            </span>
                             <button
                                 onClick={closeMobileMenu}
                                 className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
                                 </svg>
                             </button>
                         </div>
@@ -207,124 +242,148 @@ const Nav = () => {
                         {/* Sidebar Navigation */}
                         <div className="flex-1 py-4 overflow-y-auto">
                             <nav className="space-y-2 px-4">
-                                <NavLink 
-                                    to="/about" 
-                                    onClick={closeMobileMenu}
-                                    className={({ isActive }) => 
-                                        `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                            isActive 
-                                                ? 'bg-gray-100 text-gray-800 border-l-4 border-gray-600' 
-                                                : 'text-gray-600 hover:bg-gray-50'
-                                        }`
-                                    }
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span>About</span>
-                                </NavLink>
                                 {userType === 'packer' && (
                                     <>
-                                        <NavLink 
-                                            to="/marketplace" 
+                                        <NavLink
+                                            to="/marketplace"
                                             onClick={closeMobileMenu}
-                                            className={({ isActive }) => 
+                                            className={({ isActive }) =>
                                                 `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                    isActive 
-                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600' 
+                                                    isActive
+                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600'
                                                         : 'text-orange-600 hover:bg-orange-50'
                                                 }`
                                             }
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13v6a2 2 0 002 2h6a2 2 0 002-2v-6" />
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13v6a2 2 0 002 2h6a2 2 0 002-2v-6"
+                                                />
                                             </svg>
                                             <span>Marketplace</span>
                                         </NavLink>
-                                        <NavLink 
-                                            to="/packer/gigs/booked" 
+                                        <NavLink
+                                            to="/packer/gigs/booked"
                                             onClick={closeMobileMenu}
-                                            className={({ isActive }) => 
+                                            className={({ isActive }) =>
                                                 `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                    isActive 
-                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600' 
+                                                    isActive
+                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600'
                                                         : 'text-orange-600 hover:bg-orange-50'
                                                 }`
                                             }
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                                                />
                                             </svg>
                                             <span>Your Gigs</span>
                                         </NavLink>
-                                        <NavLink 
-                                            to={`/packer/${packer?.id}`} 
+                                        <NavLink
+                                            to={`/packer/${packer?.id}`}
                                             onClick={closeMobileMenu}
-                                            className={({ isActive }) => 
+                                            className={({ isActive }) =>
                                                 `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                    isActive 
-                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600' 
+                                                    isActive
+                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600'
                                                         : 'text-orange-600 hover:bg-orange-50'
                                                 }`
                                             }
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            <svg
+                                                className="w-5 h-5"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                />
                                             </svg>
                                             <span>Profile</span>
                                         </NavLink>
                                     </>
                                 )}
                                 {userType === 'customer' && (
-                                    <NavLink 
-                                        to="/customer/dashboard" 
+                                    <NavLink
+                                        to="/customer/dashboard"
                                         onClick={closeMobileMenu}
-                                        className={({ isActive }) => 
+                                        className={({ isActive }) =>
                                             `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                isActive 
-                                                    ? 'bg-blue-100 text-blue-700 border-l-4 border-blue-600' 
+                                                isActive
+                                                    ? 'bg-blue-100 text-blue-700 border-l-4 border-blue-600'
                                                     : 'text-blue-600 hover:bg-blue-50'
                                             }`
                                         }
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                            />
                                         </svg>
                                         <span>Dashboard</span>
                                     </NavLink>
                                 )}
                                 {!isAuthenticated && (
                                     <>
-                                        <NavLink 
-                                            to="/packer/signin" 
+                                        <NavLink
+                                            to="/packer/signin"
                                             onClick={closeMobileMenu}
-                                            className={({ isActive }) => 
+                                            className={({ isActive }) =>
                                                 `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                    isActive 
-                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600' 
+                                                    isActive
+                                                        ? 'bg-orange-100 text-orange-700 border-l-4 border-orange-600'
                                                         : 'text-orange-600 hover:bg-orange-50'
                                                 }`
                                             }
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
+                                            <span className="material-symbols-outlined">
+                                                person_apron
+                                            </span>
                                             <span>Packer Login</span>
                                         </NavLink>
-                                        <NavLink 
-                                            to="/customer/signin" 
+                                        <NavLink
+                                            to="/customer/signin"
                                             onClick={closeMobileMenu}
-                                            className={({ isActive }) => 
+                                            className={({ isActive }) =>
                                                 `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                                                    isActive 
-                                                        ? 'bg-blue-100 text-blue-700 border-l-4 border-blue-600' 
+                                                    isActive
+                                                        ? 'bg-blue-100 text-blue-700 border-l-4 border-blue-600'
                                                         : 'text-blue-600 hover:bg-blue-50'
                                                 }`
                                             }
                                         >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                            </svg>
+                                            <span className="material-symbols-outlined">
+                                                person
+                                            </span>
                                             <span>Customer Login</span>
                                         </NavLink>
                                     </>
@@ -334,12 +393,38 @@ const Nav = () => {
                                         onClick={handleSignout}
                                         className="w-full flex items-center space-x-3 px-4 py-3 rounded-md font-medium text-gray-600 hover:bg-gray-50 transition-colors duration-200"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        <svg
+                                            className="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                            />
                                         </svg>
                                         <span>Sign Out</span>
                                     </button>
                                 )}
+                                <NavLink
+                                    to="/about"
+                                    onClick={closeMobileMenu}
+                                    className={({ isActive }) =>
+                                        `flex items-center space-x-3 px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
+                                            isActive
+                                                ? 'bg-gray-100 text-gray-800 border-l-4 border-gray-600'
+                                                : 'text-gray-600 hover:bg-gray-50'
+                                        }`
+                                    }
+                                >
+                                    <span className="material-symbols-outlined">
+                                        info
+                                    </span>
+                                    <span>About</span>
+                                </NavLink>
                             </nav>
                         </div>
                     </div>
