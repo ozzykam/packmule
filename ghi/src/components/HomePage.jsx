@@ -33,16 +33,16 @@ const HomePage = () => {
                 <div className="text-center mb-16">
                     <div className="flex justify-center items-center mb-6">
                         <img
-                            src="/images/packmule_logo.png"
+                            src="images/specialties_icons/packmule_logo_ver2.png"
                             alt="PackMule Logo"
-                            className="w-16 h-16 mr-4"
+                            style={{ width: '36rem' }}
                         />
-                        <h1 className="text-5xl font-bold text-gray-900">PackMule</h1>
                     </div>
                     <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                        Connect with professional packers for stress-free moving. 
-                        Whether you need help with your move or want to earn money helping others, 
-                        PackMule makes it simple and secure.
+                        Connect with professional packers for stress-free
+                        moving. Whether you need help with your move or want to
+                        earn money helping others, PackMule makes it simple and
+                        secure.
                     </p>
                 </div>
 
@@ -52,27 +52,38 @@ const HomePage = () => {
                     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100">
                         <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
                             <div className="text-4xl mb-4">📦</div>
-                            <h2 className="text-2xl font-bold mb-2">Need Moving Help?</h2>
+                            <h2 className="text-2xl font-bold mb-2">
+                                Need Moving Help?
+                            </h2>
                             <p className="text-blue-100">
-                                Post your moving job and connect with professional packers in your area
+                                Post your moving job and connect with
+                                professional packers in your area
                             </p>
                         </div>
                         <div className="p-6">
                             <ul className="space-y-3 mb-6">
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-blue-500 mr-3">✓</span>
+                                    <span className="text-blue-500 mr-3">
+                                        ✓
+                                    </span>
                                     Post detailed moving jobs with photos
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-blue-500 mr-3">✓</span>
+                                    <span className="text-blue-500 mr-3">
+                                        ✓
+                                    </span>
                                     Choose from qualified packers
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-blue-500 mr-3">✓</span>
+                                    <span className="text-blue-500 mr-3">
+                                        ✓
+                                    </span>
                                     Secure payment and ratings system
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-blue-500 mr-3">✓</span>
+                                    <span className="text-blue-500 mr-3">
+                                        ✓
+                                    </span>
                                     Track your job from start to finish
                                 </li>
                             </ul>
@@ -98,27 +109,38 @@ const HomePage = () => {
                     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-orange-100">
                         <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white">
                             <div className="text-4xl mb-4">💪</div>
-                            <h2 className="text-2xl font-bold mb-2">Ready to Earn?</h2>
+                            <h2 className="text-2xl font-bold mb-2">
+                                Ready to Earn?
+                            </h2>
                             <p className="text-orange-100">
-                                Help people move and earn money with your packing and moving skills
+                                Help people move and earn money with your
+                                packing and moving skills
                             </p>
                         </div>
                         <div className="p-6">
                             <ul className="space-y-3 mb-6">
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-orange-500 mr-3">✓</span>
+                                    <span className="text-orange-500 mr-3">
+                                        ✓
+                                    </span>
                                     Browse available moving jobs
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-orange-500 mr-3">✓</span>
+                                    <span className="text-orange-500 mr-3">
+                                        ✓
+                                    </span>
                                     Set your own schedule and rates
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-orange-500 mr-3">✓</span>
+                                    <span className="text-orange-500 mr-3">
+                                        ✓
+                                    </span>
                                     Build your reputation with reviews
                                 </li>
                                 <li className="flex items-center text-gray-700">
-                                    <span className="text-orange-500 mr-3">✓</span>
+                                    <span className="text-orange-500 mr-3">
+                                        ✓
+                                    </span>
                                     Get paid quickly and securely
                                 </li>
                             </ul>
@@ -143,27 +165,38 @@ const HomePage = () => {
 
                 {/* Features Section */}
                 <div className="mt-20 text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-8">Why Choose PackMule?</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-8">
+                        Why Choose PackMule?
+                    </h3>
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="text-center">
                             <div className="text-3xl mb-4">🛡️</div>
-                            <h4 className="text-lg font-semibold text-gray-900 mb-2">Secure & Safe</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                Secure & Safe
+                            </h4>
                             <p className="text-gray-600">
-                                All packers are verified with secure payment processing and insurance coverage
+                                All packers are verified with secure payment
+                                processing and insurance coverage
                             </p>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl mb-4">⭐</div>
-                            <h4 className="text-lg font-semibold text-gray-900 mb-2">Quality Guaranteed</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                Quality Guaranteed
+                            </h4>
                             <p className="text-gray-600">
-                                Rating system ensures you work with the best packers and customers
+                                Rating system ensures you work with the best
+                                packers and customers
                             </p>
                         </div>
                         <div className="text-center">
                             <div className="text-3xl mb-4">📱</div>
-                            <h4 className="text-lg font-semibold text-gray-900 mb-2">Easy to Use</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                Easy to Use
+                            </h4>
                             <p className="text-gray-600">
-                                Simple platform that makes booking and managing moves effortless
+                                Simple platform that makes booking and managing
+                                moves effortless
                             </p>
                         </div>
                     </div>
